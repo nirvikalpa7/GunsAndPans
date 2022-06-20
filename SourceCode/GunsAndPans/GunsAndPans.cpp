@@ -59,7 +59,7 @@ void keyboard(const uint8_t key, const int x, const int y)
 {
     if (pGame)
     {
-        pGame->kbHit(key);
+        pGame->kbHit(static_cast<GunsAndPuns::TGame::TKeyCode>(key));
     }
 }
 
@@ -90,7 +90,7 @@ void mouseClick(const int button, const int state, const int x, const int y)
             }
             else if (pGame->isStarting())
             {
-                pGame->kbHit(GunsAndPuns::TGame::ENTER_KEY);
+                pGame->kbHit(GunsAndPuns::TGame::TKeyCode::ENTER_KEY);
             }
         }
         break;

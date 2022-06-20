@@ -16,8 +16,13 @@ namespace GunsAndPuns
         TGame();
         ~TGame();
 
-        static const uint8_t ENTER_KEY{ 13U };
-        static const uint8_t ESC_KEY{ 27U };
+        enum class TKeyCode : uint8_t
+        {
+            ENTER_KEY = 13U,
+            ESC_KEY = 27,
+            YES_KEY = 'y',
+            YES_CAPS_KEY = 'Y'
+        };
 
         enum class TSoundId
         {
@@ -40,7 +45,7 @@ namespace GunsAndPuns
         void display();
         void __fastcall resize(const GLsizei w, const GLsizei h);
         void __fastcall playSound(const TSoundId id);
-        void __fastcall kbHit(const uint8_t key);
+        void __fastcall kbHit(const TGame::TKeyCode key);
 
         void __fastcall setXZAngle(GLfloat angle) { gun.setXZAngle(angle); };
         void __fastcall setYZAngle(GLfloat angle) { gun.setYZAngle(angle); };

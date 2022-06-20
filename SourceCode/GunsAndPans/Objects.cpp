@@ -108,10 +108,10 @@ namespace GunsAndPuns
         GLfloat& newX, GLfloat& newY)
     {
         const double angleRad = angleDegree * ratio;
-        const GLfloat sinVal = sin(angleRad);
-        const GLfloat cosVal = cos(angleRad);
-        newX = oldX * cosVal - oldY * sinVal;
-        newY = oldX * sinVal + oldY * cosVal;
+        const double sinVal = sin(angleRad);
+        const double cosVal = cos(angleRad);
+        newX = static_cast<GLfloat>(oldX * cosVal - oldY * sinVal);
+        newY = static_cast<GLfloat>(oldX * sinVal + oldY * cosVal);
     }
 
     //================================================================================================

@@ -71,14 +71,11 @@ namespace GunsAndPuns
         }
     }
 
-    void __fastcall TGame::kbHit(const uint8_t key)
+    void __fastcall TGame::kbHit(const TGame::TKeyCode key)
     {
-        static const uint8_t YES_KEY = 'y';
-        static const uint8_t YES_CAPS_KEY = 'Y';
-
         switch (key)
         {
-        case ESC_KEY:
+        case TKeyCode::ESC_KEY:
             if (state == TGameState::PLAY)
             {
                 state = TGameState::FINISH;
@@ -92,7 +89,7 @@ namespace GunsAndPuns
             }
             break;
 
-        case ENTER_KEY:
+        case TKeyCode::ENTER_KEY:
             if (state == TGameState::START)
             {
                 state = TGameState::PLAY;
@@ -105,8 +102,8 @@ namespace GunsAndPuns
             }
             break;
 
-        case YES_KEY:
-        case YES_CAPS_KEY:
+        case TKeyCode::YES_KEY:
+        case TKeyCode::YES_CAPS_KEY:
             if (state == TGameState::FINISH)
             {
                 state = TGameState::PLAY;
@@ -365,7 +362,7 @@ namespace GunsAndPuns
 
                     if (!bigTarget.active && !smallTarget.active && !appleTarget.active) // Finish game?
                     {
-                        kbHit(GunsAndPuns::TGame::ESC_KEY);
+                        kbHit(TKeyCode::ESC_KEY);
                     }
                 }
             }
