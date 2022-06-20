@@ -1,6 +1,6 @@
 ﻿//================================================================================================
 // Guns & Pans - 2022 / version 1.0 / Sidelnikov Dmitry (c)
-// Used: C++17, OpenGL, GLU, GLUT, Visual Studio 2022
+// Used: C++20, OpenGL, GLU, GLUT, Visual Studio 2022
 // For contact: +7 905 020 99 86 (WhatsApp), Telegram: @SpringDayInTheForest
 //================================================================================================
 // Я старался использовать самые лучшие практики по написанию кода тем неменее код далек от 
@@ -26,12 +26,14 @@
 #include "Objects.h"
 #include "Game.h"
 
+//================================================================================================
+
 std::unique_ptr<GunsAndPuns::TGame> pGame;
 
 const size_t mainWinWidth{ 800U };
 const size_t mainWinHeight{ 600U };
 
-const size_t targetFPS{ 30U };
+const size_t targetFPS{ 40U };
 const size_t timerSpeedMs{ 1000 / targetFPS };
 
 //================================================================================================
@@ -72,12 +74,24 @@ void timer(const int value)
 
 void mouseClick(const int button, const int state, const int x, const int y)
 {
+    if (!pGame)
+    {
+        return;
+    }
+
     switch (button)
     {
     case GLUT_LEFT_BUTTON:
-        if (state == GLUT_DOWN && pGame)
+        if (state == GLUT_DOWN)
         {
-            pGame->shoot();
+            if (pGame->isPlaying())
+            {
+                pGame->shoot();
+            }
+            else if (pGame->isStarting())
+            {
+                pGame->kbHit(GunsAndPuns::TGame::ENTER_KEY);
+            }
         }
         break;
 

@@ -1,5 +1,6 @@
 
 #include <cmath>
+#include <numbers>
 
 #include <windows.h>
 
@@ -39,10 +40,10 @@ namespace GunsAndPuns
     // class TBullet - снаряд в игре
 
     TBullet::TBullet()
-        : radius{ 0.185f }, speed{ 0.01f }, maxZ{ -10.0f }
+        : radius{ 0.1f }, speed{ 0.008f }, maxZ{ -10.0f }
         , cx{ 0.0f }, cy{ 0.0f }, cz{ 0.0f }
         , vx{ 0.0f }, vy{ 0.0f }, vz{ 0.0f }
-        , active{false}
+        , active{ false }, ratio{ std::numbers::pi_v<double> / 180.0 }
     {
         obj = gluNewQuadric();
         resetCenter();
@@ -61,11 +62,14 @@ namespace GunsAndPuns
         cz = 3.0f;
     }
 
-    void TBullet::calcVector()
+    void TBullet::calcVector(const GLfloat xzAngleDegree, const GLfloat yzAngleDegree)
     {
         vx = 0.0f;
         vy = 0.0f;
         vz = -1.0f;
+
+        rotate(yzAngleDegree, vy, vz, vy, vz);
+        rotate(xzAngleDegree, vx, vz, vx, vz);
     }
 
     void TBullet::draw() const
@@ -97,6 +101,17 @@ namespace GunsAndPuns
                 resetCenter();
             }
         }
+    }
+
+    void TBullet::rotate(const GLfloat angleDegree,
+        const GLfloat oldX, const GLfloat oldY,
+        GLfloat& newX, GLfloat& newY)
+    {
+        const double angleRad = angleDegree * ratio;
+        const GLfloat sinVal = sin(angleRad);
+        const GLfloat cosVal = cos(angleRad);
+        newX = oldX * cosVal - oldY * sinVal;
+        newY = oldX * sinVal + oldY * cosVal;
     }
 
     //================================================================================================
@@ -178,13 +193,13 @@ namespace GunsAndPuns
         {
             glBindTexture(GL_TEXTURE_2D, image.texture);
             glBegin(GL_QUADS);
-            glTexCoord2f(0.0, 0.0);
-            glVertex3f(cx - size, cy - size, z);
             glTexCoord2f(1.0, 0.0);
+            glVertex3f(cx - size, cy - size, z);
+            glTexCoord2f(1.0, 1.0); 
             glVertex3f(cx - size, cy + size, z);
-            glTexCoord2f(1.0, 1.0);
+            glTexCoord2f(0.0, 1.0); 
             glVertex3f(cx + size, cy + size, z);
-            glTexCoord2f(0.0, 1.0);
+            glTexCoord2f(0.0, 0.0); 
             glVertex3f(cx + size, cy - size, z);
             glEnd();
         }
@@ -200,17 +215,19 @@ namespace GunsAndPuns
             if (cx > 0.0 && cx > border)
             {
                 vx *= -1.0f;
+                cx = border;
             }
             if (cx < 0.0 && cx < -border)
             {
                 vx *= -1.0f;
+                cx = -border;
             }
         }
     }
 
     bool __fastcall TTarget::isInside(const GLfloat x, const GLfloat y) const
     {
-        return true;
+        return ((x > cx - size) && (x < cx + size) && (y > cy - size) && (y < cy + size));
     }
 
     //================================================================================================
@@ -221,12 +238,14 @@ namespace GunsAndPuns
         , xzAngle{ 0.0f }, yzAngle{ 0.0f }
         , gunAngleWidth{ 45.0f }
     {
-        obj = gluNewQuadric();
+        objBarrel = gluNewQuadric();
+        objBase = gluNewQuadric();
     }
 
     TGun::~TGun()
     {
-        gluDeleteQuadric(obj);
+        gluDeleteQuadric(objBarrel);
+        gluDeleteQuadric(objBase);
     }
 
     void TGun::draw() const
@@ -237,12 +256,20 @@ namespace GunsAndPuns
         glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
         glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
 
-        glRotatef(xzAngle * gunAngleWidth, 0.0f, 1.0f, 0.0f);
-        glRotatef(yzAngle * gunAngleWidth, 1.0f, 0.0f, 0.0f);
+        const GLfloat xzAngleDegree{ xzAngle * gunAngleWidth };
+        const GLfloat yzAngleDegree{ yzAngle * gunAngleWidth };
+
+        glRotatef(xzAngleDegree, 0.0f, 1.0f, 0.0f);
+        glRotatef(yzAngleDegree, 1.0f, 0.0f, 0.0f);
 
         glBindTexture(GL_TEXTURE_2D, image.texture);
-        gluQuadricTexture(obj, GL_TRUE);
-        gluCylinder(obj, 0.2, 0.1, length, details, details);
+        gluQuadricTexture(objBarrel, GL_TRUE);
+        gluCylinder(objBarrel, 0.2f, 0.1f, length, details, details);
+
+        glBindTexture(GL_TEXTURE_2D, image.texture);
+        gluQuadricTexture(objBase, GL_TRUE);
+        gluSphere(objBase, 0.3f, details, details);
+
         glPopMatrix();
     }
 

@@ -16,6 +16,9 @@ namespace GunsAndPuns
         TGame();
         ~TGame();
 
+        static const uint8_t ENTER_KEY{ 13U };
+        static const uint8_t ESC_KEY{ 27U };
+
         enum class TSoundId
         {
             START,
@@ -46,6 +49,8 @@ namespace GunsAndPuns
         size_t getWinHeight() const { return winHeight; }
 
         bool isPlaying() const { return (state == TGameState::PLAY); }
+        bool isStarting() const { return (state == TGameState::START); }
+        
         void onTimer();
         void move();
         void shoot();
@@ -54,6 +59,8 @@ namespace GunsAndPuns
 
         void drawPlayScreen() const;
         void reInit();
+        void collisionCheck();
+        void saveScore();
 
         // string type converter
         std::string __fastcall wstringToString(const std::wstring& wstr) const;
@@ -61,7 +68,7 @@ namespace GunsAndPuns
         TGameState state{ TGameState::START };
 
         std::vector<std::string> texturesNames;
-        const size_t textureNumber{ 6U };
+        const size_t textureNumber{ 8U };
 
         std::vector<std::wstring> soundsNames;
         const size_t soundsNumber{ 5U };
@@ -70,16 +77,20 @@ namespace GunsAndPuns
         TScene scene;
         TGround ground;
         TBullet bullet;
+        TTarget appleTarget;
         TTarget smallTarget;
         TTarget bigTarget;
 
         TScreen startScr;
         TScreen finishScr;
 
-        size_t winWidth, winHeight, score;
+        size_t winWidth, winHeight, scores;
+        const size_t startScores{ 100U };
         const size_t bulletCost{ 5U };
         bool isDrawing;
         ULONGLONG dt{ 50U }, lastTime; // delta time (ms) for frame
+
+        const std::string scoreFileName{"Score.txt"};
     };
 
 }; // namespace GunsAndPuns

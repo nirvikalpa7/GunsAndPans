@@ -75,20 +75,25 @@ namespace GunsAndPuns
         void draw() const override;
         void __fastcall move(const size_t dtMs) override;
 
+        GLfloat getCX() const { return cx; }
         GLfloat getCY() const { return cy; }
         GLfloat getCZ() const { return cz; }
+        GLfloat getRadius() const { return radius; }
 
         void resetCenter();
-        void calcVector();
+        void calcVector(const GLfloat xzAngleDegree, const GLfloat yzAngleDegree);
 
         bool active;
 
     private:
 
+        void rotate(const GLfloat angle, const GLfloat oldX, const GLfloat oldY, GLfloat& newX, GLfloat& newY);
+
         const GLfloat radius, speed, maxZ;
         GLfloat cx, cy, cz; // координата центра
         GLfloat vx, vy, vz; // вектор движения
         GLUquadric* obj; // снаряд
+        const double ratio;
     };
 
     //================================================================================================
@@ -161,6 +166,9 @@ namespace GunsAndPuns
         void __fastcall setXZAngle(GLfloat angle) { xzAngle = angle; };
         void __fastcall setYZAngle(GLfloat angle) { yzAngle = angle; };
 
+        GLfloat getXZAngleDegree() const { return xzAngle * gunAngleWidth; }
+        GLfloat getYZAngleDegree() const { return yzAngle * gunAngleWidth; }
+
         TGun();
         ~TGun();
 
@@ -170,7 +178,8 @@ namespace GunsAndPuns
         GLfloat xzAngle; // -1..1
         GLfloat yzAngle; // 0..1
         GLfloat gunAngleWidth; // угол поворота пушки в градусах
-        GLUquadric* obj;
+        GLUquadric* objBarrel;
+        GLUquadric* objBase;
     };
 
     //================================================================================================

@@ -37,8 +37,8 @@ namespace GunsAndPuns
     {
         if (id == TGeneratedImg::CHESS)
         {
-            width = 128;
-            height = 128;
+            width = 150;
+            height = 150;
             size_t SIZE = static_cast<size_t>(width) * height;
             SIZE = (SIZE << 1) + SIZE;
             data = new (std::nothrow) GLubyte[SIZE];
@@ -99,8 +99,8 @@ namespace GunsAndPuns
         }
 
         size_t row_padded = (static_cast<size_t>(width) << 1) + width;
-        // row_padded = (row_padded + 3) & (~3);
-        row_padded = (row_padded % 4) + row_padded; 
+        row_padded = (row_padded + 3) & (~3);
+        //row_padded = (row_padded % 4) + row_padded; 
         size_t dataSize = static_cast<size_t>(width) * height;
         dataSize = (dataSize << 1) + dataSize;
         data = new (std::nothrow) GLubyte[dataSize];
