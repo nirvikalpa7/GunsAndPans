@@ -15,18 +15,20 @@ namespace GunsAndPuns
     TGame::TGame()
         : winWidth{ 0U }, winHeight{ 0U }, score{ 100U }
     {
-        texturesNames.push_back("ImageTarget1.bmp");
-        texturesNames.push_back("ImageTarget2.bmp");
-        texturesNames.push_back("ImageGround1.bmp");
-        texturesNames.push_back("ImageStart1.bmp");
-        texturesNames.push_back("ImageFinish1.bmp");
-        texturesNames.push_back("ImageGun1.bmp");
+        const std::string texturesDir = "Textures\\";
+        texturesNames.push_back(texturesDir + "ImageTarget1.bmp");
+        texturesNames.push_back(texturesDir + "ImageTarget2.bmp");
+        texturesNames.push_back(texturesDir + "ImageGround1.bmp");
+        texturesNames.push_back(texturesDir + "ImageStart1.bmp");
+        texturesNames.push_back(texturesDir + "ImageFinish1.bmp");
+        texturesNames.push_back(texturesDir + "ImageGun1.bmp");
 
-        soundsNames.push_back(L"SoundStart.wav");
-        soundsNames.push_back(L"SoundPlay.wav");
-        soundsNames.push_back(L"SoundShoot.wav");
-        soundsNames.push_back(L"SoundTarget.wav");
-        soundsNames.push_back(L"SoundFinish.wav");
+        const std::wstring soundsDir = L"Sounds\\";
+        soundsNames.push_back(soundsDir + L"SoundStart.wav");
+        soundsNames.push_back(soundsDir + L"SoundPlay.wav");
+        soundsNames.push_back(soundsDir + L"SoundShoot.wav");
+        soundsNames.push_back(soundsDir + L"SoundTarget.wav");
+        soundsNames.push_back(soundsDir + L"SoundFinish.wav");
     }
 
     TGame::~TGame()
