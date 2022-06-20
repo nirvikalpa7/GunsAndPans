@@ -13,11 +13,15 @@ namespace GunsAndPuns
     // Класс для хранения текстур
     struct TImage
     {
-        GLsizei width{ 0 };
-        GLsizei height{ 0 };
-        GLuint texture{ 0U };
-        GLubyte* data{ nullptr };
+        TImage() : width{ 0 }, height{ 0 }, texture{ 0U }, data{ nullptr }
+        {
+        }
 
+        GLsizei width;
+        GLsizei height;
+        GLuint texture;
+        GLubyte* data;
+                
         enum class TGeneratedImg
         {
             CHESS
@@ -27,12 +31,18 @@ namespace GunsAndPuns
         bool __fastcall loadImage(const std::string& filename);
         void genTexture();
 
-        ~TImage()
+        void freeMem()
         {
             if (data != nullptr)
             {
                 delete[] data;
+                data = nullptr;
             }
+        }
+
+        ~TImage()
+        {
+            freeMem();
         }
     };
 

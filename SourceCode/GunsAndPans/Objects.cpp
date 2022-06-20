@@ -10,7 +10,7 @@ namespace GunsAndPuns
 {
 
     //================================================================================================
-    // class TGround - Земля в игре
+    // class TGround
 
     TGround::TGround()
         : y{ -3.0f }
@@ -37,7 +37,7 @@ namespace GunsAndPuns
     }
 
     //================================================================================================
-    // class TBullet - снаряд в игре
+    // class TBullet
 
     TBullet::TBullet()
         : radius{ 0.1f }, speed{ 0.008f }, maxZ{ -10.0f }
@@ -115,7 +115,7 @@ namespace GunsAndPuns
     }
 
     //================================================================================================
-    // class TScene - сцена с мишенями в игре
+    // class TScene
 
     TScene::TScene()
         : radius{ 0.25f }, width{ 10.0f }, height{ 7.0f }
@@ -139,7 +139,7 @@ namespace GunsAndPuns
     {
         const GLint details{ 20 };
         const GLfloat w2 = width / 2;
-        // низ
+        // down
         glPushMatrix();
         glTranslatef(-w2, downY, z);
         glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
@@ -148,7 +148,7 @@ namespace GunsAndPuns
         gluCylinder(objDown, radius, radius, width, details, details);
         glPopMatrix();
 
-        // верх
+        // up
         glPushMatrix();
         glTranslatef(-w2, topY, z);
         glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
@@ -157,7 +157,7 @@ namespace GunsAndPuns
         gluCylinder(objTop, radius, radius, width, details, details);
         glPopMatrix();
 
-        // слева
+        // left
         glPushMatrix();
         glTranslatef(-w2, topY, z);
         glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
@@ -166,7 +166,7 @@ namespace GunsAndPuns
         gluCylinder(objLeft, radius, radius, height, details, details);
         glPopMatrix();
 
-        // справа
+        // right
         glPushMatrix();
         glTranslatef(w2, topY, z);
         glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
@@ -177,7 +177,7 @@ namespace GunsAndPuns
     }
 
     //================================================================================================
-    // class TTarget - мишень
+    // class TTarget
 
     TTarget::TTarget()
         : active{ true }, z{ -5.0f }
@@ -231,7 +231,7 @@ namespace GunsAndPuns
     }
 
     //================================================================================================
-    // class TGun - пушка в игре
+    // class TGun
 
     TGun::TGun()
         : length{ 1.0f }
@@ -274,7 +274,7 @@ namespace GunsAndPuns
     }
 
     //================================================================================================
-    // class TScreen - экраны с текстурой для игры
+    // class TScreen
 
     void TScreen::draw() const
     {
@@ -291,6 +291,34 @@ namespace GunsAndPuns
         glTexCoord2f(0.0, 1.0);
         glVertex3f(-w2, h2, z);
         glEnd();
+    }
+
+    //================================================================================================
+    // class TGunAmunitions
+
+    void __fastcall TGunAmunitions::addFileAsTexture(const std::string& fname)
+    {
+        fileNames.push_back(fname);
+    }
+
+    void TGunAmunitions::draw() const
+    {
+        if (currentAmunitionsNumber < fileNames.size())
+        {
+            const GLfloat h2 = height * 0.5f;
+            const GLfloat w2 = width * 0.5f;
+            glBindTexture(GL_TEXTURE_2D, curImage.texture);
+            glBegin(GL_QUADS);
+            glTexCoord2f(0.0, 0.0);
+            glVertex3f(cx - w2, cy - h2, cz);
+            glTexCoord2f(1.0, 0.0);
+            glVertex3f(cx + w2, cy - h2, cz);
+            glTexCoord2f(1.0, 1.0);
+            glVertex3f(cx + w2, cy + h2, cz);
+            glTexCoord2f(0.0, 1.0);
+            glVertex3f(cx - w2, cy + h2, cz);
+            glEnd();
+        }
     }
 
 }; // namespace GunsAndPuns

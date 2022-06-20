@@ -73,7 +73,7 @@ namespace GunsAndPuns
         TGameState state{ TGameState::START };
 
         std::vector<std::string> texturesNames;
-        const size_t textureNumber{ 8U };
+        const size_t textureNumber{ 19U };
 
         std::vector<std::wstring> soundsNames;
         const size_t soundsNumber{ 5U };
@@ -85,12 +85,13 @@ namespace GunsAndPuns
         TTarget appleTarget;
         TTarget smallTarget;
         TTarget bigTarget;
+        TGunAmunitions amun;
 
         TScreen startScr;
         TScreen finishScr;
 
         size_t winWidth, winHeight, scores;
-        const size_t startScores{ 100U };
+        const size_t startScores{ 50U };
         const size_t bulletCost{ 5U };
         bool isDrawing;
         ULONGLONG dt{ 50U }, lastTime; // delta time (ms) for frame

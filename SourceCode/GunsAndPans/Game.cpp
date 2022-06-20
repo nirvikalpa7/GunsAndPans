@@ -28,6 +28,15 @@ namespace GunsAndPuns
         texturesNames.push_back(texturesDir + "ImageTarget3.bmp");
         texturesNames.push_back(texturesDir + "ImageBullet1.bmp");
 
+        std::string fn;
+        const size_t amunTextureNumber{ 10U };
+        for (size_t i = 0; i <= amunTextureNumber; i++)
+        {
+            fn = texturesDir + "ImageAmmunitions" + ((i == amunTextureNumber) ? "" : "0") 
+                + std::to_string(i) + ".bmp";
+            texturesNames.push_back(fn);
+        }
+
         const std::wstring soundsDir = L"Sounds\\";
         soundsNames.push_back(soundsDir + L"SoundStart.wav");
         soundsNames.push_back(soundsDir + L"SoundPlay.wav");
@@ -169,6 +178,9 @@ namespace GunsAndPuns
         bullet.resetCenter();
 
         scores = startScores;
+
+        amun.setAmunNumber(startScores / bulletCost);
+        amun.initCurTexture();
     }
 
     void TGame::init()
@@ -181,8 +193,6 @@ namespace GunsAndPuns
         glShadeModel(GL_SMOOTH);
 
         // Let's init internal objects
-        reInit();
-
         scene.genTexture(TImage::TGeneratedImg::CHESS);
 
         if (texturesNames.size() != textureNumber)
@@ -199,6 +209,16 @@ namespace GunsAndPuns
         finishScr.loadTexture(texturesNames[4]);
         gun.loadTexture(texturesNames[5]);
 
+        const size_t startAmunIndex{ 8U };
+        const size_t finishAmunIndex{ 18U };
+        for (size_t i = startAmunIndex; i <= finishAmunIndex; i++)
+        {
+            amun.addFileAsTexture(texturesNames[i]);
+        }
+        amun.setParams(0.6f, 0.3f, -1.1f, -0.9f, 3.0f);
+        
+        reInit();
+
         lastTime = GetTickCount64();
     }
 
@@ -208,6 +228,7 @@ namespace GunsAndPuns
         scene.draw();
         gun.draw();
         bullet.draw();
+        amun.draw();
         if (appleTarget.active)
         {
             appleTarget.draw();
@@ -305,7 +326,7 @@ namespace GunsAndPuns
         {
             if (!bullet.active)
             {
-                if (scores <= 0U)
+                if (amun.getAmunNumber() == 0U)
                 {
                     state = TGame::TGameState::FINISH;
                     playSound(TSoundId::FINISH);
@@ -314,6 +335,7 @@ namespace GunsAndPuns
                     return;
                 }
                 scores -= bulletCost;
+                amun.decrementNumber();
                 playSound(TSoundId::SHOOT);
                 bullet.resetCenter();
                 const auto XZAngle = gun.getXZAngleDegree();

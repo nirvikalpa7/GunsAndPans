@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -203,6 +204,52 @@ namespace GunsAndPuns
         GLfloat z{ 0.0f };
         GLfloat width{ 6.0f };
         GLfloat height{ 5.0f };
+    };
+
+    //================================================================================================
+
+    class TGunAmunitions
+    {
+    public:
+
+        void __fastcall addFileAsTexture(const std::string& fname);
+        void __fastcall setAmunNumber(const size_t num) { currentAmunitionsNumber = num; }
+        
+        size_t getAmunNumber() const { return currentAmunitionsNumber; }
+
+        void initCurTexture()
+        {
+            curImage.freeMem();
+            curImage.loadImage(fileNames[currentAmunitionsNumber]);
+            curImage.genTexture();
+        }
+        
+        void decrementNumber() 
+        { 
+            currentAmunitionsNumber--;
+            initCurTexture();
+        }
+        
+        void setParams(const GLfloat _width, const GLfloat _height, 
+            const GLfloat _cx, const GLfloat _cy, const GLfloat _cz)
+        {
+            height = _height;
+            width = _width;
+            cx = _cx;
+            cy = _cy;
+            cz = _cz;
+        }
+   
+        void draw() const;
+
+    private:
+
+        std::vector<std::string> fileNames;
+
+        TImage curImage;
+        size_t currentAmunitionsNumber{ 10U };
+
+        GLfloat width, height, cx, cy, cz;
     };
 
 }; // namespace GunsAndPuns
