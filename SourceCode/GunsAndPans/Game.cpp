@@ -95,6 +95,10 @@ namespace GunsAndPuns
                 playSound(TSoundId::PLAY);
                 display();
             }
+            else if (state == TGameState::PLAY)
+            {
+                shoot();
+            }
             break;
 
         case YES:
@@ -189,6 +193,8 @@ namespace GunsAndPuns
         startScr.loadTexture(texturesNames[3]);
         finishScr.loadTexture(texturesNames[4]);
         gun.loadTexture(texturesNames[5]);
+
+        lastTime = GetTickCount64();
     }
 
     void TGame::drawPlayScreen() const
@@ -209,6 +215,8 @@ namespace GunsAndPuns
 
     void TGame::display()
     {
+        isDrawing = true;
+        dt = GetTickCount64() - lastTime;
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         switch (state)
@@ -218,6 +226,7 @@ namespace GunsAndPuns
             break;
 
         case TGame::TGameState::PLAY:
+            move();
             drawPlayScreen();
             break;
 
@@ -231,6 +240,8 @@ namespace GunsAndPuns
         }
 
         glutSwapBuffers();
+        lastTime = GetTickCount64();
+        isDrawing = false;
     }
 
     void __fastcall TGame::resize(const GLsizei w, const GLsizei h)
@@ -245,6 +256,38 @@ namespace GunsAndPuns
 
         winWidth = w;
         winHeight = h;
+    }
+
+    void TGame::onTimer()
+    {
+        if (!isDrawing)
+        {
+            display();
+        }
+    }
+
+    void TGame::move()
+    {
+        if (bullet.active)
+        {
+            bullet.move(dt);
+        }
+        if (bigTarget.active)
+        {
+            bigTarget.move(dt);
+        }
+        if (smallTarget.active)
+        {
+            smallTarget.move(dt);
+        }
+    }
+
+    void TGame::shoot()
+    {
+        playSound(TSoundId::SHOOT);
+        bullet.resetCenter();
+        bullet.calcVector();
+        bullet.active = true;
     }
 
 }; // namespace GunsAndPuns

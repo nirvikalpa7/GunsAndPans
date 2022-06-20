@@ -46,6 +46,9 @@ namespace GunsAndPuns
         size_t getWinHeight() const { return winHeight; }
 
         bool isPlaying() const { return (state == TGameState::PLAY); }
+        void onTimer();
+        void move();
+        void shoot();
 
     private:
 
@@ -75,6 +78,8 @@ namespace GunsAndPuns
 
         size_t winWidth, winHeight, score;
         const size_t bulletCost{ 5U };
+        bool isDrawing;
+        ULONGLONG dt{ 50U }, lastTime; // delta time (ms) for frame
     };
 
 }; // namespace GunsAndPuns

@@ -31,6 +31,9 @@ std::unique_ptr<GunsAndPuns::TGame> pGame;
 const size_t mainWinWidth{ 800U };
 const size_t mainWinHeight{ 600U };
 
+const size_t targetFPS{ 30U };
+const size_t timerSpeedMs{ 1000 / targetFPS };
+
 //================================================================================================
 // Callback functions for GLUT library
 
@@ -58,9 +61,29 @@ void keyboard(const uint8_t key, const int x, const int y)
     }
 }
 
+void timer(const int value)
+{
+    if (pGame)
+    {
+        glutTimerFunc(timerSpeedMs, timer, 0);
+        pGame->onTimer();
+    }
+};
+
 void mouseClick(const int button, const int state, const int x, const int y)
 {
+    switch (button)
+    {
+    case GLUT_LEFT_BUTTON:
+        if (state == GLUT_DOWN && pGame)
+        {
+            pGame->shoot();
+        }
+        break;
 
+    default:
+        break;
+    };
 }
 
 void mouseMove(const int x, const int y)
@@ -98,6 +121,7 @@ int main(int argc, char** argv)
     glutKeyboardFunc(keyboard);
     glutMouseFunc(mouseClick);
     glutPassiveMotionFunc(mouseMove);
+    glutTimerFunc(timerSpeedMs, timer, 0);
 
     pGame->playSound(GunsAndPuns::TGame::TSoundId::START);
 

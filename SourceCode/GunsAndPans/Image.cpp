@@ -16,6 +16,7 @@ namespace GunsAndPuns
     {
         if (data == nullptr || width == 0 || height == 0)
         {
+            std::cerr << "Incorrect state of data members in " << __FUNCTION__ << std::endl;
             return;
         }
 
@@ -38,7 +39,7 @@ namespace GunsAndPuns
         {
             width = 128;
             height = 128;
-            size_t SIZE = width * height;
+            size_t SIZE = static_cast<size_t>(width) * height;
             SIZE = (SIZE << 1) + SIZE;
             data = new (std::nothrow) GLubyte[SIZE];
             if (data == nullptr)
@@ -97,8 +98,12 @@ namespace GunsAndPuns
             return false;
         }
 
-        const int row_padded = (width * 3 + 3) & (~3);
-        data = new (std::nothrow) GLubyte[width * height * 3];
+        size_t row_padded = (static_cast<size_t>(width) << 1) + width;
+        // row_padded = (row_padded + 3) & (~3);
+        row_padded = (row_padded % 4) + row_padded; 
+        size_t dataSize = static_cast<size_t>(width) * height;
+        dataSize = (dataSize << 1) + dataSize;
+        data = new (std::nothrow) GLubyte[dataSize];
         if (data == nullptr)
         {
             std::cerr << "Can not allocate memory in " << __FUNCTION__ << std::endl;
@@ -114,27 +119,18 @@ namespace GunsAndPuns
             return false;
         }
 
-        size_t j3, index, indexR, indexG;
+        size_t j3, index;
         for (size_t i = 0U; i < height; i++)
         {
             fin.read(dataLine, row_padded);
-            size_t offset = i * width;
-            offset = (offset << 1) + offset;
+            const size_t offset = i * width * 3;
             for (size_t j = 0U; j < width; j++)
             {
                 // Convert (B, G, R) to (R, G, B)
-                j3 = (j << 1) + j;
+                j3 = j * 3;
                 index = offset + j3;
-                indexR = j3 + 2;
-                if (indexR < row_padded)
-                {
-                    data[index] = dataLine[indexR];
-                }
-                indexG = j3 + 1;
-                if (indexG < row_padded)
-                {
-                    data[index + 1] = dataLine[indexG];
-                }
+                data[index] = dataLine[j3 + 2];
+                data[index + 1] = dataLine[j3 + 1];
                 data[index + 2] = dataLine[j3];
             }
         }

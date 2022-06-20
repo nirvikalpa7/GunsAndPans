@@ -79,10 +79,13 @@ namespace GunsAndPuns
         GLfloat getCZ() const { return cz; }
 
         void resetCenter();
+        void calcVector();
+
+        bool active;
 
     private:
 
-        const GLfloat radius, speed;
+        const GLfloat radius, speed, maxZ;
         GLfloat cx, cy, cz; // координата центра
         GLfloat vx, vy, vz; // вектор движения
         GLUquadric* obj; // снаряд
@@ -140,7 +143,8 @@ namespace GunsAndPuns
 
     private:
 
-        const GLfloat speed{ 0.3f };
+        const GLfloat speed{ 0.001f };
+        const GLfloat sceneWidth{ 10.0f };
         GLfloat z, cx, cy, vx, size /* половина ширины */;
         size_t points;
     };

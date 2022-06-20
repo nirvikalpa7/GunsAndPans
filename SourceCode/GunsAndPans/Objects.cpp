@@ -39,9 +39,10 @@ namespace GunsAndPuns
     // class TBullet - снаряд в игре
 
     TBullet::TBullet()
-        : radius{ 0.185f }, speed{ 0.1f }
+        : radius{ 0.185f }, speed{ 0.01f }, maxZ{ -10.0f }
         , cx{ 0.0f }, cy{ 0.0f }, cz{ 0.0f }
         , vx{ 0.0f }, vy{ 0.0f }, vz{ 0.0f }
+        , active{false}
     {
         obj = gluNewQuadric();
         resetCenter();
@@ -60,20 +61,42 @@ namespace GunsAndPuns
         cz = 3.0f;
     }
 
+    void TBullet::calcVector()
+    {
+        vx = 0.0f;
+        vy = 0.0f;
+        vz = -1.0f;
+    }
+
     void TBullet::draw() const
     {
-        glPushMatrix();
-        glBindTexture(GL_TEXTURE_2D, image.texture);
-        glTranslatef(cx, cy, cz);
-        glRotatef(33.0f, 1.0f, 1.0f, 0.0f);
-        gluQuadricTexture(obj, GL_TRUE);
-        gluSphere(obj, radius, 20, 20);
-        glPopMatrix();
+        if (active)
+        {
+            glPushMatrix();
+            glBindTexture(GL_TEXTURE_2D, image.texture);
+            glTranslatef(cx, cy, cz);
+            glRotatef(33.0f, 1.0f, 1.0f, 0.0f);
+            gluQuadricTexture(obj, GL_TRUE);
+            gluSphere(obj, radius, 20, 20);
+            glPopMatrix();
+        }
     }
 
     void __fastcall TBullet::move(const size_t dtMs)
     {
+        if (active)
+        {
+            const GLfloat distance = dtMs * speed;
+            cx += vx * distance;
+            cy += vy * distance;
+            cz += vz * distance;
 
+            if (cz < maxZ)
+            {
+                active = false;
+                resetCenter();
+            }
+        }
     }
 
     //================================================================================================
@@ -171,7 +194,17 @@ namespace GunsAndPuns
     {
         if (active)
         {
-
+            cx = cx + vx * dtMs * speed;
+            const GLfloat sceneLogRadius{ 0.25f };
+            const GLfloat border = sceneWidth * 0.5f - size - sceneLogRadius;
+            if (cx > 0.0 && cx > border)
+            {
+                vx *= -1.0f;
+            }
+            if (cx < 0.0 && cx < -border)
+            {
+                vx *= -1.0f;
+            }
         }
     }
 
