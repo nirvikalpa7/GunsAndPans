@@ -7,6 +7,8 @@
 
 #include "Image.h"
 
+#define FAST_MUL3(val) (((val) << 1) + (val))
+
 //================================================================================================
 
 namespace GunsAndPuns
@@ -39,8 +41,7 @@ namespace GunsAndPuns
         {
             width = 150;
             height = 150;
-            size_t SIZE = static_cast<size_t>(width) * height;
-            SIZE = (SIZE << 1) + SIZE;
+            const size_t SIZE = FAST_MUL3(static_cast<size_t>(width) * height);
             data = new (std::nothrow) GLubyte[SIZE];
             if (data == nullptr)
             {
@@ -55,8 +56,7 @@ namespace GunsAndPuns
                 for (size_t j = 0; j < width; j++)
                 {
                     c = ((((i & 0x8) == 0) ^ ((j & 0x8) == 0))) * 255;
-                    index = indexI + j;
-                    index = (index << 1) + index;
+                    index = FAST_MUL3(indexI + j);
                     data[index + 0] = c;
                     data[index + 1] = c;
                     data[index + 2] = c;
@@ -98,11 +98,10 @@ namespace GunsAndPuns
             return false;
         }
 
-        size_t row_padded = (static_cast<size_t>(width) << 1) + width;
+        size_t row_padded = FAST_MUL3(static_cast<size_t>(width));
         row_padded = (row_padded + 3) & (~3);
         //row_padded = (row_padded % 4) + row_padded; 
-        size_t dataSize = static_cast<size_t>(width) * height;
-        dataSize = (dataSize << 1) + dataSize;
+        const size_t dataSize = FAST_MUL3(static_cast<size_t>(width) * height);
         data = new (std::nothrow) GLubyte[dataSize];
         if (data == nullptr)
         {
@@ -123,11 +122,11 @@ namespace GunsAndPuns
         for (size_t i = 0U; i < height; i++)
         {
             fin.read(dataLine, row_padded);
-            const size_t offset = i * width * 3;
+            const size_t offset = FAST_MUL3(i * width);
             for (size_t j = 0U; j < width; j++)
             {
                 // Convert (B, G, R) to (R, G, B)
-                j3 = j * 3;
+                j3 = FAST_MUL3(j);
                 index = offset + j3;
                 data[index] = dataLine[j3 + 2];
                 data[index + 1] = dataLine[j3 + 1];
