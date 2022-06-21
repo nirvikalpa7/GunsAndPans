@@ -79,7 +79,7 @@ namespace GunsAndPuns
             glPushMatrix();
             glBindTexture(GL_TEXTURE_2D, image.texture);
             glTranslatef(cx, cy, cz);
-            glRotatef(33.0f, 1.0f, 1.0f, 0.0f);
+            glRotatef(33.0f, 1.0f, 1.0f, 0.0f); // move texture
             gluQuadricTexture(obj, GL_TRUE);
             gluSphere(obj, radius, 20, 20);
             glPopMatrix();
@@ -118,7 +118,7 @@ namespace GunsAndPuns
     // class TScene
 
     TScene::TScene()
-        : radius{ 0.25f }, width{ 10.0f }, height{ 7.0f }
+        : logRadius{ 0.25f }, width{ 10.0f }, height{ 7.0f }
         , z{ -5.0f }, topY{ 4.0f }, downY{ -2.0f }
     {
         objTop = gluNewQuadric();
@@ -146,7 +146,7 @@ namespace GunsAndPuns
         glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         glBindTexture(GL_TEXTURE_2D, image.texture);
         gluQuadricTexture(objDown, GL_TRUE);
-        gluCylinder(objDown, radius, radius, width, details, details);
+        gluCylinder(objDown, logRadius, logRadius, width, details, details);
         glPopMatrix();
 
         // up
@@ -155,7 +155,7 @@ namespace GunsAndPuns
         glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
         glBindTexture(GL_TEXTURE_2D, image.texture);
         gluQuadricTexture(objTop, GL_TRUE);
-        gluCylinder(objTop, radius, radius, width, details, details);
+        gluCylinder(objTop, logRadius, logRadius, width, details, details);
         glPopMatrix();
 
         // left
@@ -164,7 +164,7 @@ namespace GunsAndPuns
         glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
         glBindTexture(GL_TEXTURE_2D, image.texture);
         gluQuadricTexture(objLeft, GL_TRUE);
-        gluCylinder(objLeft, radius, radius, height, details, details);
+        gluCylinder(objLeft, logRadius, logRadius, height, details, details);
         glPopMatrix();
 
         // right
@@ -173,7 +173,7 @@ namespace GunsAndPuns
         glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
         glBindTexture(GL_TEXTURE_2D, image.texture);
         gluQuadricTexture(objRight, GL_TRUE);
-        gluCylinder(objRight, radius, radius, height, details, details);
+        gluCylinder(objRight, logRadius, logRadius, height, details, details);
         glPopMatrix();
     }
 
@@ -213,12 +213,12 @@ namespace GunsAndPuns
             cx = cx + vx * dtMs * speed;
             const GLfloat sceneLogRadius{ 0.25f };
             const GLfloat border = sceneWidth * 0.5f - size - sceneLogRadius;
-            if (cx > 0.0 && cx > border)
+            if (cx > 0.0f && cx > border)
             {
                 vx *= -1.0f;
                 cx = border;
             }
-            if (cx < 0.0 && cx < -border)
+            if (cx < 0.0f && cx < -border)
             {
                 vx *= -1.0f;
                 cx = -border;
@@ -251,7 +251,6 @@ namespace GunsAndPuns
 
     void TGun::draw() const
     {
-        const GLint details{ 20 };
         glPushMatrix();
         glTranslatef(0, -1, 3);
         glRotatef(180.0f, 0.0f, 0.0f, 1.0f);
@@ -263,13 +262,19 @@ namespace GunsAndPuns
         glRotatef(xzAngleDegree, 0.0f, 1.0f, 0.0f);
         glRotatef(yzAngleDegree, 1.0f, 0.0f, 0.0f);
 
+        const GLfloat barrelBigRadius{ 0.2f };
+        const GLfloat barrelSmallRadius{ 0.1f };
+        const GLint details{ 20 };
+
         glBindTexture(GL_TEXTURE_2D, image.texture);
         gluQuadricTexture(objBarrel, GL_TRUE);
-        gluCylinder(objBarrel, 0.2f, 0.1f, length, details, details);
+        gluCylinder(objBarrel, barrelBigRadius, barrelSmallRadius, length, details, details);
+
+        const GLfloat gunBaseRadius{ 0.3f };
 
         glBindTexture(GL_TEXTURE_2D, image.texture);
         gluQuadricTexture(objBase, GL_TRUE);
-        gluSphere(objBase, 0.3f, details, details);
+        gluSphere(objBase, gunBaseRadius, details, details);
 
         glPopMatrix();
     }

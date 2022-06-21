@@ -111,7 +111,7 @@ namespace GunsAndPuns
 
     private:
 
-        GLfloat z, height, width, radius, topY, downY;
+        GLfloat z, height, width, logRadius, topY, downY;
 
         GLUquadric* objTop;
         GLUquadric* objDown;
