@@ -11,7 +11,7 @@
 
 namespace GunsAndPuns
 {
-    // статический объект в игре
+    // Static object in the game
     class TObject {
     public:
 
@@ -36,7 +36,7 @@ namespace GunsAndPuns
         TImage image;
     };
 
-    // Динамический объект в игре
+    // Dynamic object in the game
     class TDynamicObject : public TObject {
     public:
 
@@ -45,7 +45,7 @@ namespace GunsAndPuns
 
     //================================================================================================
 
-    // Земля в игре
+    // Ground in the game
     class TGround : public TObject {
     public:
 
@@ -66,7 +66,7 @@ namespace GunsAndPuns
 
     //================================================================================================
 
-    // Снаряд в игре
+    // Gun bullet in the game
     class TBullet : public TDynamicObject {
     public:
 
@@ -91,15 +91,15 @@ namespace GunsAndPuns
         void rotate(const GLfloat angle, const GLfloat oldX, const GLfloat oldY, GLfloat& newX, GLfloat& newY);
 
         const GLfloat radius, speed, maxZ;
-        GLfloat cx, cy, cz; // координата центра
-        GLfloat vx, vy, vz; // вектор движения
-        GLUquadric* obj; // снаряд
+        GLfloat cx, cy, cz; // center
+        GLfloat vx, vy, vz; // movement vector 
+        GLUquadric* obj;    // bullet
         const double ratio;
     };
 
     //================================================================================================
 
-    // Сцена с мишенями в игре
+    // A scene with targets in the game
     class TScene : public TObject {
     public:
 
@@ -121,7 +121,7 @@ namespace GunsAndPuns
 
     //================================================================================================
 
-    // Мишень
+    // A target in the game
     class TTarget : public TDynamicObject
     {
     public:
@@ -151,13 +151,13 @@ namespace GunsAndPuns
 
         const GLfloat speed{ 0.001f };
         const GLfloat sceneWidth{ 10.0f };
-        GLfloat z, cx, cy, vx, size /* половина ширины */;
+        GLfloat z, cx, cy, vx, size /* half width */;
         size_t points;
     };
 
     //================================================================================================
 
-    // Пушка в игре
+    // A gun in the game
     class TGun : public TObject
     {
     public:
@@ -178,14 +178,14 @@ namespace GunsAndPuns
         GLfloat length;
         GLfloat xzAngle; // -1..1
         GLfloat yzAngle; // 0..1
-        GLfloat gunAngleWidth; // угол поворота пушки в градусах
+        GLfloat gunAngleWidth; // rotation view angle in degrees
         GLUquadric* objBarrel;
         GLUquadric* objBase;
     };
 
     //================================================================================================
 
-    // Экраны с текстурой для игры
+    // Texture screen in the game
     class TScreen : public TObject
     {
     public:
@@ -208,6 +208,7 @@ namespace GunsAndPuns
 
     //================================================================================================
 
+    // Gun amunitions screen in the game
     class TGunAmunitions
     {
     public:

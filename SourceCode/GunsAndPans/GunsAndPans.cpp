@@ -9,9 +9,10 @@
 // встречаются сырые указатели и массивы. В игре не используется какое либо крутое освещение,
 // тени или шейдеры. Это все можно добавить во вторую версию игры, сам OpenGL это поддерживает.
 // Система проверок корректности параметров и состояний тоже наверное не идеальна. Но
-// код коментирован, использован свой неймспейс в игре, код разбит на единицы трансяции. 
-// Также я старался при разработке держать в уме принцип KISS. Математические операции также
-// не были как то сильно оптимизированны в этой игре вопрос производительности остро не стоит.
+// код коментирован, использован свой неймспейс в игре, код разбит на единицы трансяции, 
+// используется ООП и полиморфизм. Также я старался при разработке держать в уме принцип KISS. 
+// Математические операции также не были как то сильно оптимизированны в этой игре проблема
+// производительности остро не стоит.
 //================================================================================================
 
 #include <memory>
@@ -106,10 +107,10 @@ void mouseMove(const int x, const int y)
     {
         const GLfloat wHalf = static_cast<GLfloat>(pGame->getWinWidth() >> 1);
         const GLfloat horAngle = (x - wHalf) / wHalf;
-        pGame->setXZAngle(horAngle);
+        pGame->setXZAngle(horAngle); // -1 .. 1 percentage
 
         const GLfloat h = static_cast<GLfloat>(pGame->getWinHeight());
-        const GLfloat verAngle = (h - y) / h;
+        const GLfloat verAngle = (h - y) / h; // 0 .. 1 percentage
         pGame->setYZAngle(verAngle);
 
         pGame->display();
@@ -121,7 +122,7 @@ void mouseMove(const int x, const int y)
 int main(int argc, char** argv)
 {
     pGame = std::make_unique<GunsAndPuns::TGame>();
-    pGame->checkResources(); // проверим необходимые ресурсы
+    pGame->checkResources(); // check textures and sounds we need in the game
     
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

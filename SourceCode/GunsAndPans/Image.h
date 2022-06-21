@@ -10,7 +10,7 @@
 
 namespace GunsAndPuns
 {
-    // Класс для хранения текстур
+    // Game OpenGL texture
     struct TImage
     {
         TImage() : width{ 0 }, height{ 0 }, texture{ 0U }, data{ nullptr }
@@ -38,6 +38,9 @@ namespace GunsAndPuns
                 delete[] data;
                 data = nullptr;
             }
+            width = 0;
+            height = 0;
+            texture = 0U;
         }
 
         ~TImage()

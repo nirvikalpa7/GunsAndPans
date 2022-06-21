@@ -29,10 +29,10 @@ namespace GunsAndPuns
         texturesNames.push_back(texturesDir + "ImageBullet1.bmp");
 
         std::string fn;
-        const size_t amunTextureNumber{ 10U };
-        for (size_t i = 0; i <= amunTextureNumber; i++)
+        const size_t amunTexturesNumber{ 10U };
+        for (size_t i = 0; i <= amunTexturesNumber; i++)
         {
-            fn = texturesDir + "ImageAmmunitions" + ((i == amunTextureNumber) ? "" : "0") 
+            fn = texturesDir + "ImageAmmunitions" + ((i == amunTexturesNumber) ? "" : "0") 
                 + std::to_string(i) + ".bmp";
             texturesNames.push_back(fn);
         }
@@ -60,7 +60,7 @@ namespace GunsAndPuns
     {
         namespace fs = std::filesystem;
 
-        // првоерка необходимых ресурсов перед запуском игры
+        // checking resourses - textures and sound files
         for (const auto& filename : texturesNames)
         {
             if (!fs::exists(filename))
@@ -227,8 +227,11 @@ namespace GunsAndPuns
         ground.draw();
         scene.draw();
         gun.draw();
-        bullet.draw();
         amun.draw();
+        if (bullet.active)
+        {
+            bullet.draw();
+        }
         if (appleTarget.active)
         {
             appleTarget.draw();
@@ -276,13 +279,15 @@ namespace GunsAndPuns
 
     void __fastcall TGame::resize(const GLsizei w, const GLsizei h)
     {
+        GLfloat startZCoord{ - 5.0f };
+
         glViewport(0, 0, w, h);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(60.0, 1.0 * (GLfloat)w / (GLfloat)h, 1.0, 30.0);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glTranslatef(0.0, 0.0, -5);
+        glTranslatef(0.0f, 0.0f, startZCoord);
 
         winWidth = w;
         winHeight = h;
@@ -352,7 +357,7 @@ namespace GunsAndPuns
         {
             if (bullet.active)
             {
-                // Crossed scene with targets?
+                // Have bullet crossed scene with targets?
                 if (fabs(scene.getZ() - bullet.getCZ()) <= bullet.getRadius() * 1.5f)
                 {
                     const GLfloat x = bullet.getCX();
@@ -391,13 +396,13 @@ namespace GunsAndPuns
         }
     }
 
-    void TGame::saveScore()
+    void TGame::saveScore() const
     {
         std::ofstream fout;
         fout.open(scoreFileName);
         if (fout.is_open())
         {
-            const size_t maxScores = startScores - (bulletCost << 1)
+            const size_t maxScores = startScores - (bulletCost * 3)
                 + bigTarget.getPoints() + smallTarget.getPoints() + appleTarget.getPoints();
 
             fout << "Guns & Pans Game Results" << std::endl;

@@ -138,7 +138,8 @@ namespace GunsAndPuns
     void TScene::draw() const
     {
         const GLint details{ 20 };
-        const GLfloat w2 = width / 2;
+        const GLfloat w2 = width * 0.5f;
+
         // down
         glPushMatrix();
         glTranslatef(-w2, downY, z);

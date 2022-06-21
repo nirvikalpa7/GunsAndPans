@@ -47,8 +47,8 @@ namespace GunsAndPuns
         void __fastcall playSound(const TSoundId id);
         void __fastcall kbHit(const TGame::TKeyCode key);
 
-        void __fastcall setXZAngle(GLfloat angle) { gun.setXZAngle(angle); };
-        void __fastcall setYZAngle(GLfloat angle) { gun.setYZAngle(angle); };
+        void __fastcall setXZAngle(const GLfloat angle) { gun.setXZAngle(angle); };
+        void __fastcall setYZAngle(const GLfloat angle) { gun.setYZAngle(angle); };
 
         size_t getWinWidth() const { return winWidth; }
         size_t getWinHeight() const { return winHeight; }
@@ -65,7 +65,7 @@ namespace GunsAndPuns
         void drawPlayScreen() const;
         void reInit();
         void collisionCheck();
-        void saveScore();
+        void saveScore() const;
 
         // string type converter
         std::string __fastcall wstringToString(const std::wstring& wstr) const;
@@ -79,13 +79,13 @@ namespace GunsAndPuns
         const size_t soundsNumber{ 5U };
 
         TGun gun;
-        TScene scene;
-        TGround ground;
+        TGunAmunitions amun;
         TBullet bullet;
+        TGround ground;
+        TScene scene;
         TTarget appleTarget;
         TTarget smallTarget;
         TTarget bigTarget;
-        TGunAmunitions amun;
 
         TScreen startScr;
         TScreen finishScr;
@@ -94,7 +94,8 @@ namespace GunsAndPuns
         const size_t startScores{ 50U };
         const size_t bulletCost{ 5U };
         bool isDrawing;
-        ULONGLONG dt{ 50U }, lastTime; // delta time (ms) for frame
+        ULONGLONG dt{ 50U }; // delta time (ms) for every frame
+        ULONGLONG lastTime;
 
         const std::string scoreFileName{"Score.txt"};
     };
