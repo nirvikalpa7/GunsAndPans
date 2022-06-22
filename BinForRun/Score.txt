@@ -1,4 +1,0 @@
-Guns & Pans Game Results
-Max possible scores: 110
-Your current scores: 105
-Bullet cost: 5
