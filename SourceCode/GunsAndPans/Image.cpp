@@ -128,8 +128,8 @@ namespace GunsAndPuns
                 // Convert (B, G, R) to (R, G, B)
                 j3 = FAST_MUL3(j);
                 index = offset + j3;
-                data[index] = dataLine[j3 + 2];
-                data[index + 1] = dataLine[j3 + 1];
+                data[index] = dataLine[j3 + 2];     // false positive warning from a compiler
+                data[index + 1] = dataLine[j3 + 1]; // false positive warning from a compiler
                 data[index + 2] = dataLine[j3];
             }
         }
