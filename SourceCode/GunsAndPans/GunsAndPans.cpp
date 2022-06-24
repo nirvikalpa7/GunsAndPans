@@ -1,9 +1,9 @@
 ﻿//================================================================================================
 // Guns & Pans - 2022 / version 1.0.1 / Sidelnikov Dmitry (c)
 // Used: C++20, OpenGL, GLU, GLUT, Visual Studio 2022
-// For contact: +7 905 020 99 86 (WhatsApp), Telegram: @SpringDayInTheForest
+// Contacts: +79050209986 (WhatsApp), Telegram: @SpringDayInTheForest, E-Mail: nirvikalpa@yandex.ru
 //================================================================================================
-// BIN files can be found in Release section on Git Hub
+// Binary files can be found in Release section on Git Hub
 //================================================================================================
 // I tried to use the best practices for writing code, however, the code is far from perfect: 
 // in the code you can find magic numbers, a wide variety of data types and STL and portable 
@@ -37,10 +37,11 @@ const size_t mainWinWidth{ 800U };
 const size_t mainWinHeight{ 600U };
 
 const size_t targetFPS{ 40U };
-const size_t timerSpeedMs{ 1000 / targetFPS };
+const size_t timerSpeedMs{ 1000U / targetFPS };
 
 const std::string gameVersion{ "1.0.1" };
-const std::string winTitle{ "Guns & Pans - 2022 / version " + gameVersion + " / Sidelnikov Dmitry" };
+const std::string authors{ "Dmitry Sidelnikov" };
+const std::string winTitle{ "Guns & Pans - 2022 / version " + gameVersion + " / " + authors };
 
 //================================================================================================
 // Callback functions for GLUT library

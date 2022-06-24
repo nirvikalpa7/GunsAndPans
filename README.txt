@@ -1,9 +1,9 @@
 //================================================================================================
-// Guns & Pans - 2022 / version 1.0 / Sidelnikov Dmitry (c)
+// Guns & Pans - 2022 / version 1.0.1 / Sidelnikov Dmitry (c)
 // Used: C++20, OpenGL, GLU, GLUT, Visual Studio 2022
-// For contact: +7 905 020 99 86 (WhatsApp), Telegram: @SpringDayInTheForest
+// Contacts: +79050209986 (WhatsApp), Telegram: @SpringDayInTheForest, E-Mail: nirvikalpa@yandex.ru
 //================================================================================================
-// BIN files can be found in Release section on Git Hub
+// Binary files can be found in Release section on Git Hub
 //================================================================================================
 // I tried to use the best practices for writing code, however, the code is far from perfect: 
 // in the code you can find magic numbers, a wide variety of data types and STL and portable 
