@@ -1,18 +1,20 @@
 ﻿//================================================================================================
-// Guns & Pans - 2022 / version 1.0 / Sidelnikov Dmitry (c)
+// Guns & Pans - 2022 / version 1.0.1 / Sidelnikov Dmitry (c)
 // Used: C++20, OpenGL, GLU, GLUT, Visual Studio 2022
 // For contact: +7 905 020 99 86 (WhatsApp), Telegram: @SpringDayInTheForest
 //================================================================================================
-// Я старался использовать самые лучшие практики по написанию кода тем неменее код далек от 
-// идеального: в коде можно встретить магические числа, большое разнообразие типов данных
-// и STL и портабельные целые типы, и старые сишные типы и типы OpenGl и Windows, также 
-// встречаются сырые указатели и массивы. В игре не используется какое либо крутое освещение,
-// тени или шейдеры. Это все можно добавить во вторую версию игры, сам OpenGL это поддерживает.
-// Система проверок корректности параметров и состояний тоже наверное не идеальна. Но
-// код коментирован, использован свой неймспейс в игре, код разбит на единицы трансяции, 
-// используется ООП и полиморфизм. Также я старался при разработке держать в уме принцип KISS. 
-// Математические операции также не были как то сильно оптимизированны в этой игре проблема
-// производительности остро не стоит.
+// BIN files can be found in Release section on Git Hub
+//================================================================================================
+// I tried to use the best practices for writing code, however, the code is far from perfect: 
+// in the code you can find magic numbers, a wide variety of data types and STL and portable 
+// integer types, and old C types and OpenGL and Windows types, raw pointers and arrays are 
+// also found. The game does not use any cool lighting, shadows or shaders. All this can be 
+// added to the second version of the game, OpenGL itself supports it. The system of checking 
+// the correctness of parameters and states is also probably not ideal. But the code is commented, 
+// its namespace is used in the game, the code is divided into translation units, OOP and 
+// polymorphism are used. I also tried to keep the KISS principle in mind when developing. 
+// Mathematical operations were also not heavily optimized in this game, since the performance 
+// problem is not acute.
 //================================================================================================
 
 #include <memory>
@@ -36,6 +38,9 @@ const size_t mainWinHeight{ 600U };
 
 const size_t targetFPS{ 40U };
 const size_t timerSpeedMs{ 1000 / targetFPS };
+
+const std::string gameVersion{ "1.0.1" };
+const std::string winTitle{ "Guns & Pans - 2022 / version " + gameVersion + " / Sidelnikov Dmitry" };
 
 //================================================================================================
 // Callback functions for GLUT library
@@ -126,7 +131,7 @@ int main(int argc, char** argv)
     
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutCreateWindow("Guns & Pans - 2022 / version 1.0 / Sidelnikov Dmitry");
+    glutCreateWindow(winTitle.c_str());
 
     pGame->init();
   
