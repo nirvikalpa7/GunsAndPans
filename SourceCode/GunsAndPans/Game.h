@@ -41,6 +41,24 @@ namespace GunsAndPuns
             FINISH
         };
 
+        enum TTexture : uint16_t // Textures indexes in name vector
+        {
+            START_SCR = 0U,
+            FINISH_SCR = 1U,
+            
+            GROUND = 2U,
+            GUN = 3U,
+            BULLET = 4U,
+
+            SMALL_TARGET = 5U,
+            BIG_TARGET = 6U,
+            APPLE_TARGET = 7U,
+
+            LEFT_TARGET = 8U,
+            RIGHT_TARGET = 9U,
+            LEMON_TARGET = 10U
+        };
+
         void checkResources() const;
         void init();
         void display();
@@ -82,9 +100,7 @@ namespace GunsAndPuns
         TGun gun;
         TGunAmunitions amun;
         TBullet bullet;
-        TGround ground;
-        TScene scene;
-        TLevelTargets level; // Targets for every level
+        TLevels level;
 
         TScreen startScr;
         TScreen finishScr;

@@ -5,6 +5,7 @@
 #include <windows.h>
 
 #include "Objects.h"
+#include "Game.h"
 
 namespace GunsAndPuns
 {
@@ -347,41 +348,44 @@ namespace GunsAndPuns
     }
 
     //================================================================================================
-    // class TLevelTargets
+    // class TLevels
         
-    void TLevelTargets::init(const std::vector<std::string>& texturesNames)
+    void TLevels::init(const std::vector<std::string>& texturesNames)
     {
-        appleTarget.loadTexture(texturesNames[6]);
-        smallTarget.loadTexture(texturesNames[0]);
-        bigTarget.loadTexture(texturesNames[1]);
+        appleTarget.loadTexture(texturesNames[TGame::TTexture::APPLE_TARGET]);
+        smallTarget.loadTexture(texturesNames[TGame::TTexture::SMALL_TARGET]);
+        bigTarget.loadTexture(texturesNames[TGame::TTexture::BIG_TARGET]);
 
         appleTarget.setPoints(30);
         smallTarget.setPoints(25);
         bigTarget.setPoints(20);
 
-        leftTarget.loadTexture(texturesNames[8]);
-        rightTarget.loadTexture(texturesNames[9]);
-        fastTarget.loadTexture(texturesNames[10]);
+        leftTarget.loadTexture(texturesNames[TGame::TTexture::LEFT_TARGET]);
+        rightTarget.loadTexture(texturesNames[TGame::TTexture::RIGHT_TARGET]);
+        lemonTarget.loadTexture(texturesNames[TGame::TTexture::LEMON_TARGET]);
 
-        fastTarget.setPoints(30);
+        lemonTarget.setPoints(30);
         leftTarget.setPoints(25);
         rightTarget.setPoints(25);
+
+        scene.genTexture(TImage::TGeneratedImg::CHESS);
+        ground.loadTexture(texturesNames[TGame::TTexture::GROUND]);
     }
 
-    void TLevelTargets::reInit()
+    void TLevels::reInit()
     {
         appleTarget.init(0.0f, 4.9f, 1.5f, 0.0f, 0.5f, true);
         smallTarget.init(0.0f, 2.3f, -1.0f, 0.0f, 0.75f, true);
         bigTarget.init(0.0f, -0.2f, 1.0f, 0.0f, 1.0f, true);
 
-        fastTarget.init(0.0f, 4.9f, -1.6f, 0.0f, 0.5f, true);
+        lemonTarget.init(0.0f, 4.9f, -1.6f, 0.0f, 0.5f, true);
         leftTarget.init(-3.0f, 1.0f, 0.0f, 1.0f, 0.75f, false);
         rightTarget.init(3.0f, 1.0f, 0.0f, -1.0f, 0.75f, false);
 
         level = TLevelNum::FIRST;
     }
 
-    bool TLevelTargets::isTargetsActive() const
+    bool TLevels::isTargetsActive() const
     {
         if (level == TLevelNum::FIRST)
         {
@@ -389,19 +393,19 @@ namespace GunsAndPuns
         }
         else if (level == TLevelNum::SECOND)
         {
-            return leftTarget.active || rightTarget.active || fastTarget.active;
+            return leftTarget.active || rightTarget.active || lemonTarget.active;
         }
 
         return false;
     }
 
-    size_t TLevelTargets::getAllTargetsPoints() const
+    size_t TLevels::getAllTargetsPoints() const
     {
         return appleTarget.getPoints() + smallTarget.getPoints() + bigTarget.getPoints() +
-            leftTarget.getPoints() + rightTarget.getPoints() + fastTarget.getPoints();
+            leftTarget.getPoints() + rightTarget.getPoints() + lemonTarget.getPoints();
     }
 
-    bool TLevelTargets::collisionCheck(const GLfloat x, const GLfloat y, size_t& scores, TBullet& bullet)
+    bool TLevels::collisionCheck(const GLfloat x, const GLfloat y, size_t& scores, TBullet& bullet)
     {
         if (level == TLevelNum::FIRST)
         {
@@ -448,12 +452,12 @@ namespace GunsAndPuns
                 scores += rightTarget.getPoints();
                 return true;
             }
-            else if (fastTarget.active && fastTarget.isInside(x, y))
+            else if (lemonTarget.active && lemonTarget.isInside(x, y))
             {
-                fastTarget.active = false;
+                lemonTarget.active = false;
                 bullet.active = false;
                 bullet.resetCenter();
-                scores += fastTarget.getPoints();
+                scores += lemonTarget.getPoints();
                 return true;
             }
         }
@@ -461,8 +465,11 @@ namespace GunsAndPuns
         return false;
     }
 
-    void TLevelTargets::draw() const
+    void TLevels::draw() const
     {
+        ground.draw();
+        scene.draw();
+
         if (level == TLevelNum::FIRST)
         {
             if (appleTarget.active)
@@ -480,9 +487,9 @@ namespace GunsAndPuns
         }
         else if (level == TLevelNum::SECOND)
         {
-            if (fastTarget.active)
+            if (lemonTarget.active)
             {
-                fastTarget.draw();
+                lemonTarget.draw();
             }
             if (leftTarget.active)
             {
@@ -495,7 +502,7 @@ namespace GunsAndPuns
         }
     }
 
-    void __fastcall TLevelTargets::move(const size_t dt)
+    void __fastcall TLevels::move(const size_t dt)
     {
         if (level == TLevelNum::FIRST)
         {
@@ -514,9 +521,9 @@ namespace GunsAndPuns
         }
         else if (level == TLevelNum::SECOND)
         {
-            if (fastTarget.active)
+            if (lemonTarget.active)
             {
-                fastTarget.move(dt);
+                lemonTarget.move(dt);
             }
             if (leftTarget.active)
             {
@@ -529,7 +536,7 @@ namespace GunsAndPuns
         }
     }
 
-    void TLevelTargets::nextLevel()
+    void TLevels::nextLevel()
     {
         if (level == TLevelNum::FIRST)
         {

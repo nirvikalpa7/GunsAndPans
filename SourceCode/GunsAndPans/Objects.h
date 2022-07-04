@@ -262,7 +262,7 @@ namespace GunsAndPuns
     //================================================================================================
 
     // Set of targets for several levels
-    class TLevelTargets : public TDynamicObject
+    class TLevels : public TDynamicObject
     {
     public:
 
@@ -281,11 +281,16 @@ namespace GunsAndPuns
         void __fastcall move(const size_t dtMs) override;
 
         TLevelNum getLevel() const { return level; }
-        bool isTargetsActive() const;
-        void nextLevel();
+        GLfloat getSceneZ() const { return scene.getZ(); }
         size_t getAllTargetsPoints() const;
 
+        bool isTargetsActive() const;
+        void nextLevel();
+
     private:
+
+        TGround ground;
+        TScene scene;
 
         // Level 1
         TTarget appleTarget;
@@ -295,7 +300,7 @@ namespace GunsAndPuns
         // Level 2
         TTarget leftTarget;
         TTarget rightTarget;
-        TTarget fastTarget;
+        TTarget lemonTarget;
 
         TLevelNum level{ TLevelNum::FIRST };
     };

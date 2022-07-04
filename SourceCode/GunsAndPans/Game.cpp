@@ -19,14 +19,17 @@ namespace GunsAndPuns
         scores = startScores;
 
         const std::string texturesDir = "Textures\\";
-        texturesNames.push_back(texturesDir + "ImageTarget1.bmp");
-        texturesNames.push_back(texturesDir + "ImageTarget2.bmp");
-        texturesNames.push_back(texturesDir + "ImageGround1.bmp");
         texturesNames.push_back(texturesDir + "ImageStart1.bmp");
         texturesNames.push_back(texturesDir + "ImageFinish1.bmp");
+
+        texturesNames.push_back(texturesDir + "ImageGround1.bmp");
         texturesNames.push_back(texturesDir + "ImageGun1.bmp");
-        texturesNames.push_back(texturesDir + "ImageTarget3.bmp");
         texturesNames.push_back(texturesDir + "ImageBullet1.bmp");
+
+        texturesNames.push_back(texturesDir + "ImageTarget1.bmp");
+        texturesNames.push_back(texturesDir + "ImageTarget2.bmp");
+        texturesNames.push_back(texturesDir + "ImageTarget3.bmp");
+
         texturesNames.push_back(texturesDir + "ImageTarget4.bmp");
         texturesNames.push_back(texturesDir + "ImageTarget5.bmp");
         texturesNames.push_back(texturesDir + "ImageTarget6.bmp");
@@ -189,18 +192,16 @@ namespace GunsAndPuns
         glShadeModel(GL_SMOOTH);
 
         // Let's init internal objects
-        scene.genTexture(TImage::TGeneratedImg::CHESS);
-
+        
         if (texturesNames.size() != textureNumber)
         {
             std::cerr << "Expected " << textureNumber << " textures in the array. In " << __FUNCTION__ << std::endl;
             return;
         }
-        bullet.loadTexture(texturesNames[7]);
-        ground.loadTexture(texturesNames[2]);
-        startScr.loadTexture(texturesNames[3]);
-        finishScr.loadTexture(texturesNames[4]);
-        gun.loadTexture(texturesNames[5]);
+        bullet.loadTexture(texturesNames[TGame::TTexture::BULLET]);
+        startScr.loadTexture(texturesNames[TGame::TTexture::START_SCR]);
+        finishScr.loadTexture(texturesNames[TGame::TTexture::FINISH_SCR]);
+        gun.loadTexture(texturesNames[TGame::TTexture::GUN]);
 
         level.init(texturesNames);
 
@@ -219,8 +220,6 @@ namespace GunsAndPuns
 
     void TGame::drawPlayScreen() const
     {
-        ground.draw();
-        scene.draw();
         gun.draw();
         amun.draw();
         if (bullet.active)
@@ -332,7 +331,7 @@ namespace GunsAndPuns
             if (bullet.active)
             {
                 // Have bullet crossed scene with targets?
-                if (fabs(scene.getZ() - bullet.getCZ()) <= bullet.getRadius() * 1.5f)
+                if (fabs(level.getSceneZ() - bullet.getCZ()) <= bullet.getRadius() * 1.5f)
                 {
                     const GLfloat x = bullet.getCX();
                     const GLfloat y = bullet.getCY();
@@ -344,11 +343,11 @@ namespace GunsAndPuns
 
                     if (!level.isTargetsActive()) // All targets are destroyed?
                     {
-                        if (level.getLevel() == TLevelTargets::TLevelNum::FIRST) // Next level?
+                        if (level.getLevel() == TLevels::TLevelNum::FIRST) // Next level?
                         {
                             level.nextLevel();
                         }
-                        else if (level.getLevel() == TLevelTargets::TLevelNum::SECOND) // Finish game?
+                        else if (level.getLevel() == TLevels::TLevelNum::SECOND) // Finish game?
                         {
                             kbHit(TKeyCode::ESC_KEY);
                         }
