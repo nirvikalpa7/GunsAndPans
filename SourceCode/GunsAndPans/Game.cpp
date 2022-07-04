@@ -27,6 +27,9 @@ namespace GunsAndPuns
         texturesNames.push_back(texturesDir + "ImageGun1.bmp");
         texturesNames.push_back(texturesDir + "ImageTarget3.bmp");
         texturesNames.push_back(texturesDir + "ImageBullet1.bmp");
+        texturesNames.push_back(texturesDir + "ImageTarget4.bmp");
+        texturesNames.push_back(texturesDir + "ImageTarget5.bmp");
+        texturesNames.push_back(texturesDir + "ImageTarget6.bmp");
 
         std::string fn;
         const size_t amunTexturesNumber{ 10U };
@@ -166,14 +169,7 @@ namespace GunsAndPuns
 
     void TGame::reInit()
     {
-        appleTarget.setPoints(30);
-        appleTarget.init(0.0f, 4.9f, 1.5f, 0.5f);
-
-        smallTarget.setPoints(25);
-        smallTarget.init(0.0f, 2.3f, -1.0f, 0.75f);
-
-        bigTarget.setPoints(20);
-        bigTarget.init(0.0f, -0.2f, 1.0f, 1.0f);
+        level.reInit();
 
         bullet.resetCenter();
 
@@ -201,16 +197,15 @@ namespace GunsAndPuns
             return;
         }
         bullet.loadTexture(texturesNames[7]);
-        appleTarget.loadTexture(texturesNames[6]);
-        smallTarget.loadTexture(texturesNames[0]);
-        bigTarget.loadTexture(texturesNames[1]);
         ground.loadTexture(texturesNames[2]);
         startScr.loadTexture(texturesNames[3]);
         finishScr.loadTexture(texturesNames[4]);
         gun.loadTexture(texturesNames[5]);
 
-        const size_t startAmunIndex{ 8U };
-        const size_t finishAmunIndex{ 18U };
+        level.init(texturesNames);
+
+        const size_t startAmunIndex{ 11U };
+        const size_t finishAmunIndex{ 21U };
         for (size_t i = startAmunIndex; i <= finishAmunIndex; i++)
         {
             amun.addFileAsTexture(texturesNames[i]);
@@ -232,18 +227,8 @@ namespace GunsAndPuns
         {
             bullet.draw();
         }
-        if (appleTarget.active)
-        {
-            appleTarget.draw();
-        }
-        if (smallTarget.active)
-        {
-            smallTarget.draw();
-        }
-        if (bigTarget.active)
-        {
-            bigTarget.draw();
-        }
+        
+        level.draw();
     }
 
     void TGame::display()
@@ -305,18 +290,7 @@ namespace GunsAndPuns
     {
         if (state == TGame::TGameState::PLAY)
         {
-            if (bigTarget.active)
-            {
-                bigTarget.move(dt);
-            }
-            if (smallTarget.active)
-            {
-                smallTarget.move(dt);
-            }
-            if (appleTarget.active)
-            {
-                appleTarget.move(dt);
-            }
+            level.move(dt);
             if (bullet.active)
             {
                 bullet.move(dt);
@@ -362,34 +336,22 @@ namespace GunsAndPuns
                 {
                     const GLfloat x = bullet.getCX();
                     const GLfloat y = bullet.getCY();
-                    if (smallTarget.active && smallTarget.isInside(x, y))
+
+                    if (level.collisionCheck(x, y, scores, bullet)) // Target get into target?
                     {
                         playSound(TSoundId::TARGET);
-                        smallTarget.active = false;
-                        bullet.active = false;
-                        bullet.resetCenter();
-                        scores += smallTarget.getPoints();
-                    }
-                    else if (bigTarget.active && bigTarget.isInside(x, y))
-                    {
-                        playSound(TSoundId::TARGET);
-                        bigTarget.active = false;
-                        bullet.active = false;
-                        bullet.resetCenter();
-                        scores += bigTarget.getPoints();
-                    }
-                    else if (appleTarget.active && appleTarget.isInside(x, y))
-                    {
-                        playSound(TSoundId::TARGET);
-                        appleTarget.active = false;
-                        bullet.active = false;
-                        bullet.resetCenter();
-                        scores += appleTarget.getPoints();
                     }
 
-                    if (!bigTarget.active && !smallTarget.active && !appleTarget.active) // Finish game?
+                    if (!level.isTargetsActive()) // All targets are destroyed?
                     {
-                        kbHit(TKeyCode::ESC_KEY);
+                        if (level.getLevel() == TLevelTargets::TLevelNum::FIRST) // Next level?
+                        {
+                            level.nextLevel();
+                        }
+                        else if (level.getLevel() == TLevelTargets::TLevelNum::SECOND) // Finish game?
+                        {
+                            kbHit(TKeyCode::ESC_KEY);
+                        }
                     }
                 }
             }
@@ -402,8 +364,7 @@ namespace GunsAndPuns
         fout.open(scoreFileName);
         if (fout.is_open())
         {
-            const size_t maxScores = startScores - (bulletCost * 3)
-                + bigTarget.getPoints() + smallTarget.getPoints() + appleTarget.getPoints();
+            const size_t maxScores = startScores + level.getAllTargetsPoints() - (bulletCost * 6);
 
             fout << "Guns & Pans Game Results" << std::endl;
             fout << "Max possible scores: " << maxScores << std::endl;

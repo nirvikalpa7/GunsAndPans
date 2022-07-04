@@ -136,13 +136,16 @@ namespace GunsAndPuns
         void __fastcall setPoints(size_t p) { points = p; }
         size_t getPoints() const { return points; }
 
-        void __fastcall init(const GLfloat _cx, const GLfloat _cy, const GLfloat _vx, const GLfloat _size)
+        void __fastcall init(const GLfloat _cx, const GLfloat _cy, 
+            const GLfloat _vx, const GLfloat _vy, const GLfloat _size, const bool _horizontalTarget)
         {
             cx = _cx;
             cy = _cy;
             vx = _vx;
+            vy = _vy;
             size = _size;
             active = true;
+            horizontalTarget = _horizontalTarget;
         }
 
         bool active;
@@ -151,8 +154,11 @@ namespace GunsAndPuns
 
         const GLfloat speed{ 0.001f };
         const GLfloat sceneWidth{ 10.0f };
-        GLfloat z, cx, cy, vx, size /* half width */;
+        const GLfloat yTop{ 4.0f };
+        const GLfloat yDown{ -2.0f };
+        GLfloat z, cx, cy, vx, vy, size /* half width */;
         size_t points;
+        bool horizontalTarget;
     };
 
     //================================================================================================
@@ -252,5 +258,47 @@ namespace GunsAndPuns
 
         GLfloat width, height, cx, cy, cz;
     };
+
+    //================================================================================================
+
+    // Set of targets for several levels
+    class TLevelTargets : public TDynamicObject
+    {
+    public:
+
+        enum class TLevelNum 
+        {
+            FIRST,
+            SECOND,
+            FINISH
+        };
+
+        void init(const std::vector<std::string> & textures);
+        void reInit();
+        bool collisionCheck(const GLfloat x, const GLfloat y, size_t& scores, TBullet& bullet);
+        
+        void draw() const override;
+        void __fastcall move(const size_t dtMs) override;
+
+        TLevelNum getLevel() const { return level; }
+        bool isTargetsActive() const;
+        void nextLevel();
+        size_t getAllTargetsPoints() const;
+
+    private:
+
+        // Level 1
+        TTarget appleTarget;
+        TTarget smallTarget;
+        TTarget bigTarget;
+
+        // Level 2
+        TTarget leftTarget;
+        TTarget rightTarget;
+        TTarget fastTarget;
+
+        TLevelNum level{ TLevelNum::FIRST };
+    };
+
 
 }; // namespace GunsAndPuns

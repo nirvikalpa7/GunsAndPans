@@ -182,8 +182,8 @@ namespace GunsAndPuns
 
     TTarget::TTarget()
         : active{ true }, z{ -5.0f }
-        , cx{ 0.0f }, cy{ 0.0f }, vx{ 0.0f }, size{ 0.0f }
-        , points{ 0U }
+        , cx{ 0.0f }, cy{ 0.0f }, vx{ 0.0f }, vy{ 0.0f }, size{ 0.0f }
+        , points{ 0U }, horizontalTarget{ false }
     {
 
     }
@@ -210,18 +210,37 @@ namespace GunsAndPuns
     {
         if (active)
         {
-            cx = cx + vx * dtMs * speed;
             const GLfloat sceneLogRadius{ 0.25f };
-            const GLfloat border = sceneWidth * 0.5f - size - sceneLogRadius;
-            if (cx > 0.0f && cx > border)
+            if (horizontalTarget)
             {
-                vx *= -1.0f;
-                cx = border;
+                cx = cx + vx * dtMs * speed;
+                const GLfloat border = sceneWidth * 0.5f - size - sceneLogRadius;
+                if (cx > 0.0f && cx > border)
+                {
+                    vx *= -1.0f;
+                    cx = border;
+                }
+                else if (cx < 0.0f && cx < -border)
+                {
+                    vx *= -1.0f;
+                    cx = -border;
+                }
             }
-            if (cx < 0.0f && cx < -border)
+            else
             {
-                vx *= -1.0f;
-                cx = -border;
+                cy = cy + vy * dtMs * speed;
+                const GLfloat borderTop = yTop - size - sceneLogRadius;
+                const GLfloat borderDown = yDown + size + sceneLogRadius;
+                if (cy > 0.0f && cy > borderTop)
+                {
+                    vy *= -1.0f;
+                    cy = borderTop;
+                }
+                else if (cy < 0.0f && cy < borderDown)
+                {
+                    vy *= -1.0f;
+                    cy = borderDown;
+                }
             }
         }
     }
@@ -324,6 +343,201 @@ namespace GunsAndPuns
             glTexCoord2f(0.0, 1.0);
             glVertex3f(cx - w2, cy + h2, cz);
             glEnd();
+        }
+    }
+
+    //================================================================================================
+    // class TLevelTargets
+        
+    void TLevelTargets::init(const std::vector<std::string>& texturesNames)
+    {
+        appleTarget.loadTexture(texturesNames[6]);
+        smallTarget.loadTexture(texturesNames[0]);
+        bigTarget.loadTexture(texturesNames[1]);
+
+        appleTarget.setPoints(30);
+        smallTarget.setPoints(25);
+        bigTarget.setPoints(20);
+
+        leftTarget.loadTexture(texturesNames[8]);
+        rightTarget.loadTexture(texturesNames[9]);
+        fastTarget.loadTexture(texturesNames[10]);
+
+        fastTarget.setPoints(30);
+        leftTarget.setPoints(25);
+        rightTarget.setPoints(25);
+    }
+
+    void TLevelTargets::reInit()
+    {
+        appleTarget.init(0.0f, 4.9f, 1.5f, 0.0f, 0.5f, true);
+        smallTarget.init(0.0f, 2.3f, -1.0f, 0.0f, 0.75f, true);
+        bigTarget.init(0.0f, -0.2f, 1.0f, 0.0f, 1.0f, true);
+
+        fastTarget.init(0.0f, 4.9f, -1.6f, 0.0f, 0.5f, true);
+        leftTarget.init(-3.0f, 1.0f, 0.0f, 1.0f, 0.75f, false);
+        rightTarget.init(3.0f, 1.0f, 0.0f, -1.0f, 0.75f, false);
+
+        level = TLevelNum::FIRST;
+    }
+
+    bool TLevelTargets::isTargetsActive() const
+    {
+        if (level == TLevelNum::FIRST)
+        {
+            return appleTarget.active || smallTarget.active || bigTarget.active;
+        }
+        else if (level == TLevelNum::SECOND)
+        {
+            return leftTarget.active || rightTarget.active || fastTarget.active;
+        }
+
+        return false;
+    }
+
+    size_t TLevelTargets::getAllTargetsPoints() const
+    {
+        return appleTarget.getPoints() + smallTarget.getPoints() + bigTarget.getPoints() +
+            leftTarget.getPoints() + rightTarget.getPoints() + fastTarget.getPoints();
+    }
+
+    bool TLevelTargets::collisionCheck(const GLfloat x, const GLfloat y, size_t& scores, TBullet& bullet)
+    {
+        if (level == TLevelNum::FIRST)
+        {
+            if (smallTarget.active && smallTarget.isInside(x, y))
+            {
+                smallTarget.active = false;
+                bullet.active = false;
+                bullet.resetCenter();
+                scores += smallTarget.getPoints();
+                return true;
+            }
+            else if (bigTarget.active && bigTarget.isInside(x, y))
+            {
+                bigTarget.active = false;
+                bullet.active = false;
+                bullet.resetCenter();
+                scores += bigTarget.getPoints();
+                return true;
+            }
+            else if (appleTarget.active && appleTarget.isInside(x, y))
+            {
+                appleTarget.active = false;
+                bullet.active = false;
+                bullet.resetCenter();
+                scores += appleTarget.getPoints();
+                return true;
+            }
+        }
+        else if (level == TLevelNum::SECOND)
+        {
+            if (leftTarget.active && leftTarget.isInside(x, y))
+            {
+                leftTarget.active = false;
+                bullet.active = false;
+                bullet.resetCenter();
+                scores += leftTarget.getPoints();
+                return true;
+            }
+            else if (rightTarget.active && rightTarget.isInside(x, y))
+            {
+                rightTarget.active = false;
+                bullet.active = false;
+                bullet.resetCenter();
+                scores += rightTarget.getPoints();
+                return true;
+            }
+            else if (fastTarget.active && fastTarget.isInside(x, y))
+            {
+                fastTarget.active = false;
+                bullet.active = false;
+                bullet.resetCenter();
+                scores += fastTarget.getPoints();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void TLevelTargets::draw() const
+    {
+        if (level == TLevelNum::FIRST)
+        {
+            if (appleTarget.active)
+            {
+                appleTarget.draw();
+            }
+            if (smallTarget.active)
+            {
+                smallTarget.draw();
+            }
+            if (bigTarget.active)
+            {
+                bigTarget.draw();
+            }
+        }
+        else if (level == TLevelNum::SECOND)
+        {
+            if (fastTarget.active)
+            {
+                fastTarget.draw();
+            }
+            if (leftTarget.active)
+            {
+                leftTarget.draw();
+            }
+            if (rightTarget.active)
+            {
+                rightTarget.draw();
+            }
+        }
+    }
+
+    void __fastcall TLevelTargets::move(const size_t dt)
+    {
+        if (level == TLevelNum::FIRST)
+        {
+            if (bigTarget.active)
+            {
+                bigTarget.move(dt);
+            }
+            if (smallTarget.active)
+            {
+                smallTarget.move(dt);
+            }
+            if (appleTarget.active)
+            {
+                appleTarget.move(dt);
+            }
+        }
+        else if (level == TLevelNum::SECOND)
+        {
+            if (fastTarget.active)
+            {
+                fastTarget.move(dt);
+            }
+            if (leftTarget.active)
+            {
+                leftTarget.move(dt);
+            }
+            if (rightTarget.active)
+            {
+                rightTarget.move(dt);
+            }
+        }
+    }
+
+    void TLevelTargets::nextLevel()
+    {
+        if (level == TLevelNum::FIRST)
+        {
+            level = TLevelNum::SECOND;
+        }
+        else if (level == TLevelNum::SECOND)
+        {
+            level = TLevelNum::FINISH;
         }
     }
 

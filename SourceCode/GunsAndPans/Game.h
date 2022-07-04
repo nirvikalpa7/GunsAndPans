@@ -8,7 +8,8 @@ namespace GunsAndPuns
 {
 
     //================================================================================================
-
+    
+    // Main class of the game 
     class TGame
     {
     public:
@@ -73,7 +74,7 @@ namespace GunsAndPuns
         TGameState state{ TGameState::START };
 
         std::vector<std::string> texturesNames;
-        const size_t textureNumber{ 19U };
+        const size_t textureNumber{ 22U };
 
         std::vector<std::wstring> soundsNames;
         const size_t soundsNumber{ 5U };
@@ -83,9 +84,7 @@ namespace GunsAndPuns
         TBullet bullet;
         TGround ground;
         TScene scene;
-        TTarget appleTarget;
-        TTarget smallTarget;
-        TTarget bigTarget;
+        TLevelTargets level; // Targets for every level
 
         TScreen startScr;
         TScreen finishScr;

@@ -1,5 +1,5 @@
 ﻿//================================================================================================
-// Guns & Pans - 2022 / version 1.0.1 / Sidelnikov Dmitry (c)
+// Guns & Pans - 2022 / version 1.5.0 / Sidelnikov Dmitry (c)
 // Used: C++20, OpenGL, GLU, GLUT, Visual Studio 2022
 // Contacts: +79050209986 (WhatsApp), Telegram: @SpringDayInTheForest, E-Mail: nirvikalpa@yandex.ru
 //================================================================================================
@@ -39,7 +39,7 @@ const size_t mainWinHeight{ 600U };
 const size_t targetFPS{ 40U };
 const size_t timerSpeedMs{ 1000U / targetFPS };
 
-const std::string gameVersion{ "1.0.1" };
+const std::string gameVersion{ "1.5.0" };
 const std::string authors{ "Dmitry Sidelnikov" };
 const std::string winTitle{ "Guns & Pans - 2022 / version " + gameVersion + " / " + authors };
 
