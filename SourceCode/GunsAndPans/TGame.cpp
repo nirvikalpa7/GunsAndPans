@@ -51,10 +51,6 @@ namespace GunsAndPuns
         soundsNames.push_back(soundsDir + L"SoundFinish.wav");
     }
 
-    TGame::~TGame()
-    {
-    }
-
     std::string __fastcall TGame::wstringToString(const std::wstring& wstr) const
     {
         using convert_typeX = std::codecvt_utf8<wchar_t>;
@@ -365,10 +361,12 @@ namespace GunsAndPuns
         {
             const size_t maxScores = startScores + level.getAllTargetsPoints() - (bulletCost * 6);
 
-            fout << "Guns & Pans Game Results" << std::endl;
+            fout << "=== Guns & Pans game results === " << std::endl;
+            fout << "Start scores: " << startScores << std::endl;
             fout << "Max possible scores: " << maxScores << std::endl;
             fout << "Your current scores: " << scores << std::endl;
             fout << "Bullet cost: " << bulletCost << std::endl;
+            fout << "You did: " << amun.getShotsNumber() << " shots" << std::endl;
         }
     }
 

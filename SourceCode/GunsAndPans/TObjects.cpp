@@ -63,7 +63,7 @@ namespace GunsAndPuns
         cz = 3.0f;
     }
 
-    void TBullet::calcVector(const GLfloat xzAngleDegree, const GLfloat yzAngleDegree)
+    void __fastcall TBullet::calcVector(const GLfloat xzAngleDegree, const GLfloat yzAngleDegree)
     {
         vx = 0.0f;
         vy = 0.0f;
@@ -181,12 +181,15 @@ namespace GunsAndPuns
     //================================================================================================
     // class TTarget
 
-    TTarget::TTarget()
-        : active{ true }, z{ -5.0f }
+    TTarget::TTarget(const TScene& scene)
+        : active{ true }, speed{ 0.001f }
         , cx{ 0.0f }, cy{ 0.0f }, vx{ 0.0f }, vy{ 0.0f }, size{ 0.0f }
         , points{ 0U }, horizontalTarget{ false }
+        , sceneWidth{ scene.getWidth() }
+        , yTop{ scene.getTopY() }
+        , yDown{ scene.getDownY() }
+        , z{ scene.getZ() }
     {
-
     }
 
     void TTarget::draw() const
@@ -302,6 +305,13 @@ namespace GunsAndPuns
     //================================================================================================
     // class TScreen
 
+    TScreen::TScreen()
+        : z{ 0.0f }
+        , width{ 6.0f }
+        , height{ 5.0f }
+    {
+    }
+
     void TScreen::draw() const
     {
         const GLfloat h2 = height * 0.5f;
@@ -321,6 +331,13 @@ namespace GunsAndPuns
 
     //================================================================================================
     // class TGunAmunitions
+
+    TGunAmunitions::TGunAmunitions()
+        : currentAmunitionsNumber{ 10U }, shots{ 0U }
+        , height{0.0f}, width{0.0f}
+        , cx{0.0f}, cy{0.0f}, cz{0.0f}
+    {
+    }
 
     void __fastcall TGunAmunitions::addFileAsTexture(const std::string& fname)
     {
@@ -350,7 +367,18 @@ namespace GunsAndPuns
     //================================================================================================
     // class TLevels
         
-    void TLevels::init(const std::vector<std::string>& texturesNames)
+    TLevels::TLevels()
+        : appleTarget(scene)
+        , smallTarget(scene)
+        , bigTarget(scene)
+        , leftTarget(scene)
+        , rightTarget(scene)
+        , lemonTarget(scene)
+        , level{ TLevelNum::FIRST }
+    {    
+    }
+
+    void __fastcall TLevels::init(const std::vector<std::string>& texturesNames)
     {
         appleTarget.loadTexture(texturesNames[TGame::TTexture::APPLE_TARGET]);
         smallTarget.loadTexture(texturesNames[TGame::TTexture::SMALL_TARGET]);
@@ -374,13 +402,18 @@ namespace GunsAndPuns
 
     void TLevels::reInit()
     {
-        appleTarget.init(0.0f, 4.9f, 1.5f, 0.0f, 0.5f, true);
-        smallTarget.init(0.0f, 2.3f, -1.0f, 0.0f, 0.75f, true);
-        bigTarget.init(0.0f, -0.2f, 1.0f, 0.0f, 1.0f, true);
+        const GLfloat smallSize{ 0.5f };
+        const GLfloat middleSize{ 0.75f };
+        const GLfloat bigSize{ 1.0f };
 
-        lemonTarget.init(0.0f, 4.9f, -1.6f, 0.0f, 0.5f, true);
-        leftTarget.init(-3.0f, 1.0f, 0.0f, 1.0f, 0.75f, false);
-        rightTarget.init(3.0f, 1.0f, 0.0f, -1.0f, 0.75f, false);
+        appleTarget.init(0.0f, 4.9f, 1.5f, 0.0f, smallSize);
+        smallTarget.init(0.0f, 2.3f, -1.0f, 0.0f, middleSize);
+        bigTarget.init(0.0f, -0.2f, 1.0f, 0.0f, bigSize);
+
+        const GLfloat sceneCenterY = scene.getDownY() + (scene.getTopY() - scene.getDownY()) * 0.5f;
+        lemonTarget.init(0.0f, 4.9f, -1.7f, 0.0f, smallSize);
+        leftTarget.init(-3.0f, sceneCenterY, 0.0f, 1.0f, middleSize, false);
+        rightTarget.init(3.0f, sceneCenterY, 0.0f, -1.0f, middleSize, false);
 
         level = TLevelNum::FIRST;
     }
@@ -405,7 +438,7 @@ namespace GunsAndPuns
             leftTarget.getPoints() + rightTarget.getPoints() + lemonTarget.getPoints();
     }
 
-    bool TLevels::collisionCheck(const GLfloat x, const GLfloat y, size_t& scores, TBullet& bullet)
+    bool __fastcall TLevels::collisionCheck(const GLfloat x, const GLfloat y, size_t& scores, TBullet& bullet)
     {
         if (level == TLevelNum::FIRST)
         {

@@ -1,4 +1,6 @@
-Guns & Pans Game Results
+=== Guns & Pans game results === 
+Start scores: 50
 Max possible scores: 175
 Your current scores: 165
 Bullet cost: 5
+You did: 8 shots

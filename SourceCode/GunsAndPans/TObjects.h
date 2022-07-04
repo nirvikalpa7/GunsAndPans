@@ -82,7 +82,7 @@ namespace GunsAndPuns
         GLfloat getRadius() const { return radius; }
 
         void resetCenter();
-        void calcVector(const GLfloat xzAngleDegree, const GLfloat yzAngleDegree);
+        void __fastcall calcVector(const GLfloat xzAngleDegree, const GLfloat yzAngleDegree);
 
         bool active;
 
@@ -108,6 +108,9 @@ namespace GunsAndPuns
         void draw() const override;
 
         GLfloat getZ() const { return z; }
+        GLfloat getWidth() const { return width; }
+        GLfloat getTopY() const { return topY; }
+        GLfloat getDownY() const { return downY; }
 
     private:
 
@@ -126,7 +129,7 @@ namespace GunsAndPuns
     {
     public:
 
-        TTarget();
+        TTarget(const TScene & scene);
 
         void draw() const override;
         void __fastcall move(const size_t dtMs) override;
@@ -137,7 +140,7 @@ namespace GunsAndPuns
         size_t getPoints() const { return points; }
 
         void __fastcall init(const GLfloat _cx, const GLfloat _cy, 
-            const GLfloat _vx, const GLfloat _vy, const GLfloat _size, const bool _horizontalTarget)
+            const GLfloat _vx, const GLfloat _vy, const GLfloat _size, const bool _horizontalTarget = true)
         {
             cx = _cx;
             cy = _cy;
@@ -152,10 +155,10 @@ namespace GunsAndPuns
 
     private:
 
-        const GLfloat speed{ 0.001f };
-        const GLfloat sceneWidth{ 10.0f };
-        const GLfloat yTop{ 4.0f };
-        const GLfloat yDown{ -2.0f };
+        const GLfloat speed;
+        const GLfloat sceneWidth;
+        const GLfloat yTop;
+        const GLfloat yDown;
         GLfloat z, cx, cy, vx, vy, size /* half width */;
         size_t points;
         bool horizontalTarget;
@@ -196,6 +199,8 @@ namespace GunsAndPuns
     {
     public:
 
+        TScreen();
+
         void draw() const override;
 
         void __fastcall setParams(const GLfloat _z, const GLfloat _width, const GLfloat _height)
@@ -207,9 +212,9 @@ namespace GunsAndPuns
 
     private:
 
-        GLfloat z{ 0.0f };
-        GLfloat width{ 6.0f };
-        GLfloat height{ 5.0f };
+        GLfloat z;
+        GLfloat width;
+        GLfloat height;
     };
 
     //================================================================================================
@@ -219,10 +224,12 @@ namespace GunsAndPuns
     {
     public:
 
+        TGunAmunitions();
         void __fastcall addFileAsTexture(const std::string& fname);
-        void __fastcall setAmunNumber(const size_t num) { currentAmunitionsNumber = num; }
+        void __fastcall setAmunNumber(const size_t num) { currentAmunitionsNumber = num; shots = 0U; }
         
         size_t getAmunNumber() const { return currentAmunitionsNumber; }
+        size_t getShotsNumber() const { return shots; }
 
         void initCurTexture()
         {
@@ -234,10 +241,11 @@ namespace GunsAndPuns
         void decrementNumber() 
         { 
             currentAmunitionsNumber--;
+            shots++;
             initCurTexture();
         }
         
-        void setParams(const GLfloat _width, const GLfloat _height, 
+        void __fastcall setParams(const GLfloat _width, const GLfloat _height,
             const GLfloat _cx, const GLfloat _cy, const GLfloat _cz)
         {
             height = _height;
@@ -254,7 +262,7 @@ namespace GunsAndPuns
         std::vector<std::string> fileNames;
 
         TImage curImage;
-        size_t currentAmunitionsNumber{ 10U };
+        size_t currentAmunitionsNumber, shots;
 
         GLfloat width, height, cx, cy, cz;
     };
@@ -273,9 +281,11 @@ namespace GunsAndPuns
             FINISH
         };
 
-        void init(const std::vector<std::string> & textures);
+        TLevels();
+
+        void __fastcall init(const std::vector<std::string> & textures);
         void reInit();
-        bool collisionCheck(const GLfloat x, const GLfloat y, size_t& scores, TBullet& bullet);
+        bool __fastcall collisionCheck(const GLfloat x, const GLfloat y, size_t& scores, TBullet& bullet);
         
         void draw() const override;
         void __fastcall move(const size_t dtMs) override;
@@ -289,8 +299,8 @@ namespace GunsAndPuns
 
     private:
 
-        TGround ground;
         TScene scene;
+        TGround ground;        
 
         // Level 1
         TTarget appleTarget;
@@ -302,7 +312,7 @@ namespace GunsAndPuns
         TTarget rightTarget;
         TTarget lemonTarget;
 
-        TLevelNum level{ TLevelNum::FIRST };
+        TLevelNum level;
     };
 
 

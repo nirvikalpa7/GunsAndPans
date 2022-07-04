@@ -15,7 +15,6 @@ namespace GunsAndPuns
     public:
 
         TGame();
-        ~TGame();
 
         enum class TKeyCode : uint8_t
         {
