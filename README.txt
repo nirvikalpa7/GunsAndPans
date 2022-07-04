@@ -1,5 +1,5 @@
 //================================================================================================
-// Guns & Pans - 2022 / version 1.0.1 / Sidelnikov Dmitry (c)
+// Guns & Pans - 2022 / version 1.5.0 / Sidelnikov Dmitry (c)
 // Used: C++20, OpenGL, GLU, GLUT, Visual Studio 2022
 // Contacts: +79050209986 (WhatsApp), Telegram: @SpringDayInTheForest, E-Mail: nirvikalpa@yandex.ru
 //================================================================================================
