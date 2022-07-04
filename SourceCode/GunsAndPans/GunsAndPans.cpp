@@ -25,9 +25,9 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#include "Image.h"
-#include "Objects.h"
-#include "Game.h"
+#include "TImage.h"
+#include "TObjects.h"
+#include "TGame.h"
 
 //================================================================================================
 

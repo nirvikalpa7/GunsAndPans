@@ -6,7 +6,7 @@
 
 #include <windows.h>
 
-#include "Game.h"
+#include "TGame.h"
 
 namespace GunsAndPuns
 {

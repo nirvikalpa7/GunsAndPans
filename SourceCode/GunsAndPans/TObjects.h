@@ -7,7 +7,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#include "Image.h"
+#include "TImage.h"
 
 namespace GunsAndPuns
 {

@@ -5,7 +5,7 @@
 
 #include <windows.h>
 
-#include "Image.h"
+#include "TImage.h"
 
 #define FAST_MUL3(val) (((val) << 1) + (val))
 

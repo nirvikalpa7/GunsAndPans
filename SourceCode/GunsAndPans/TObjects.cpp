@@ -4,8 +4,8 @@
 
 #include <windows.h>
 
-#include "Objects.h"
-#include "Game.h"
+#include "TObjects.h"
+#include "TGame.h"
 
 namespace GunsAndPuns
 {
